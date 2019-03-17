@@ -1,0 +1,79 @@
+
+.login_screen_title{
+
+	position: absolute;
+	width: 800px;
+	height: 113px;
+	left: 181px;
+	top: 53px;
+
+	font-family: 'Open Sans';
+	font-size: 72px;
+	line-height: normal;
+
+	color: rgba(0, 120, 215, 0.7);
+}
+
+
+.login_screen_container{
+	position: absolute;
+	width: 300px;
+	height: 265px;
+	left: 362px;
+	top: 184px;
+
+	background: rgba(0, 120, 215, 0.7);
+
+}
+
+input{box-sizing:border-box} 
+
+
+
+.auth_field{
+	position:relative;
+width: 216px;
+height: 32px;
+left: 50px;
+top: 35px;
+font-family: 'Open Sans';
+font-size: 14px;
+line-height: 20px;
+
+color: rgba(0, 0, 0, 0.6);
+
+
+
+}
+
+.auth_heading{
+position: relative;
+font-family: 'Open Sans';
+line-height: normal;
+width: 60px;
+height: 20px;
+left: 120px;
+top: 40px;
+
+
+font-size: 12px;
+line-height: normal;
+
+
+color: #000000;
+
+}
+
+.login_button{
+	position: relative;
+	width: 120px;
+height: 32px;
+left: 90px;
+font-family: 'Open Sans';
+font-size: 14px;
+line-height: 20px;
+text-align: center;
+
+color: #000000;
+}
+
