@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import {MatButtonModule, MatInputModule, MatListModule, MatToolbarModule, MatCheckboxModule, MatSelectModule} from '@angular/material';
 import { HomeComponent } from './home/home.component';
+import { FeaturesComponent } from './features/features.component';
 
 
 
@@ -14,7 +15,8 @@ import { HomeComponent } from './home/home.component';
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    FeaturesComponent
   ],
   imports: [
     BrowserModule,
