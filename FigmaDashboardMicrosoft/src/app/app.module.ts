@@ -7,6 +7,9 @@ import { LoginComponent } from './login/login.component';
 import {MatButtonModule, MatInputModule, MatListModule, MatToolbarModule, MatCheckboxModule, MatSelectModule} from '@angular/material';
 import { HomeComponent } from './home/home.component';
 import { FeaturesComponent } from './features/features.component';
+import { DesignsComponent } from './designs/designs.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 
 
@@ -16,12 +19,14 @@ import { FeaturesComponent } from './features/features.component';
     AppComponent,
     LoginComponent,
     HomeComponent,
-    FeaturesComponent
+    FeaturesComponent,
+    DesignsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    MatButtonModule, MatInputModule, MatListModule, MatToolbarModule, MatCheckboxModule, MatSelectModule
+    MatButtonModule, MatInputModule, MatListModule, MatToolbarModule, MatCheckboxModule, MatSelectModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
