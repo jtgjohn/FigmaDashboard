@@ -1,6 +1,5 @@
 #To Run
 
-```npm i express
-npm i isomorphic-fetch
+```npm install
 node server.js
 ```
