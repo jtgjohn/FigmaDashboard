@@ -1,3 +1,8 @@
+@font-face {
+	font-family: 'segoeui';
+	src: url('../segoeui.ttf');
+}
+
 
 .navbar{
 	position: absolute;
@@ -16,7 +21,7 @@
 	left: -34px;
 	top: 1px;
 
-	font-family: 'Open Sans';
+	font-family: 'segoeui';
 	font-size: 24px;
 	line-height: normal;
 	text-align: center;
@@ -49,7 +54,7 @@
 
 
 .feature_button{
-	font-family: 'Open Sans';
+	font-family: 'segoeui';
 	position: relative;
 	width: 120px;
 	height: 32px;
@@ -65,7 +70,7 @@
 	left: 20px;
 	top: 20px;
 
-	font-family: 'Open Sans';
+	font-family: 'segoeui';
 	font-size: 36px;
 	line-height: normal;
 
@@ -82,7 +87,7 @@
 	left: 25px;
 	top: 80px;
 
-	font-family: 'Open Sans';
+	font-family: 'segoeui';
 	font-size: 18px;
 	line-height: normal;
 
