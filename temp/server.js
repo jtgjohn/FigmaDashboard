@@ -5,7 +5,8 @@ var fetch = require('isomorphic-fetch');
 
 //const APIKey = "10028-2e5765d3-df29-400d-b607-722bbac2b14c";
 const teamID = "681911804688300104";
-const featureID = "205%3A1595";
+//const featureID = "205%3A1595";
+const featureName = "Export Feature Dropdown";
 
 
 //OAuth
@@ -236,11 +237,69 @@ app.get("/file", async function (req, res) {
     
 });
 
+function findID(mapItem, id) {
+    //console.log(mapItem);
+    let ret = "";
+    //if (mapItem["children"].length == 0) {
+    if (!("children" in mapItem)) {
+        return ret;
+    } 
+    if (mapItem["children"] == undefined) {
+        return ret;
+    }
+    for (let i = 0; i < mapItem["children"].length; i++) {
+        //console.log(mapItem["children"][i]["name"]);
+        if (mapItem["children"][i]["name"] == featureName) {
+            ret = mapItem["children"][i]["id"];
+            //console.log("Found it");
+            break;
+        }
+        
+        let temp = findID(mapItem["children"][i], id)
+        if (temp != "") {
+            //console.log("Ret was found, it's " + temp);
+            ret = temp;
+            break;
+        }
+        
+    }
+    return ret;
+}
+
 //FileImages
 app.get("/fileImage", async function (req, res) {
     let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+    //console.log(projects);
     let files = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
-    let result = await getFileImagesAuth(files["files"][0]["key"], featureID).catch(error => console.log(error));
+    //console.log(files)
+    let file = await getFileAuth(files["files"][0]["key"]).catch(error => console.log(error));
+
+    //console.log(file);
+
+    //let picID = ""
+
+    let picID = findID(file["document"], featureName);
+
+    //console.log("started");
+
+    /*
+    //console.log(file);
+    //console.log(file["components"]);
+    console.log(file["document"]["children"]);
+    console.log(file["document"]["children"].length);
+    for (let i = 0; i < file["document"]["children"].length; i++) {
+        if (file["document"]["children"][i]["name"] == featureName) {
+            console.log(file["document"]["children"][i]);
+            picID = file["document"]["children"][i]["id"];
+        }
+    }
+
+    console.log(picID);
+    */
+
+    //let result = await getFileImagesAuth(files["files"][0]["key"], featureID).catch(error => console.log(error));
+    let result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
+    //console.log(result);
     
     let ret = "<html>";
     ret += "<body>";
@@ -251,6 +310,7 @@ app.get("/fileImage", async function (req, res) {
     ret += "</html>";
     
     res.send(ret);
+    
     
 });
 
