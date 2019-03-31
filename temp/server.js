@@ -2,6 +2,16 @@ var express = require("express");
 var app = express();
 var path = require('path');
 var fetch = require('isomorphic-fetch');
+var cors = require('cors');
+
+// var bodyParser = require('body-parser');
+// app.use( bodyParser.json() );       // to support JSON-encoded bodies
+// app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+//   extended: true
+// })); 
+
+
+app.options('*', cors()); 
 
 //const APIKey = "10028-2e5765d3-df29-400d-b607-722bbac2b14c";
 const teamID = "681911804688300104";
@@ -12,10 +22,15 @@ const featureName = "Export Feature Dropdown";
 //OAuth
 //Client Secret: xGVm6lOTv0do8ca7n0uQIisw6VLuwX
 //Client ID: Me3HgbzpUV5CYdvFfDwipX
-clientID = "Me3HgbzpUV5CYdvFfDwipX";
-clientSec = "xGVm6lOTv0do8ca7n0uQIisw6VLuwX";
+
+clientIDoriginal = "Me3HgbzpUV5CYdvFfDwipX";
+clientSecretoriginal = "xGVm6lOTv0do8ca7n0uQIisw6VLuwX";
+
+clientID = "x1j28cPngqZlHPQRV86vax";
+clientSec = "P8DCUo6PMAzT9bRk9QiFv7xHEZ6rG4";
 AccessToken = "";
-callback = "http://localhost:8080/contents.html"
+callback = "http://localhost:8080/contents.html";
+callback2 = "http://localhost:4200/home";
 
 
 async function OAuthGetToken(code){
@@ -25,9 +40,29 @@ async function OAuthGetToken(code){
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
+            "client_id": clientIDoriginal,
+            "client_secret": clientSecretoriginal,
+            "redirect_uri": callback,
+            "code": code,
+            "grant_type": "authorization_code"
+        })
+    })
+
+    let ret = await result.json();
+    console.log("OAUTH RET: %j", ret);
+    return ret;
+}
+
+async function OAuthGetToken2(code){
+    let result = await fetch('https://www.figma.com/api/oauth/token', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
             "client_id": clientID,
             "client_secret": clientSec,
-            "redirect_uri": callback,
+            "redirect_uri": callback2,
             "code": code,
             "grant_type": "authorization_code"
         })
@@ -49,7 +84,7 @@ async function getUserAuth(){
     })
 
     let ret = await result.json()
-
+    console.log("USER AUTH RET: %j",ret);
     return ret
 }
 
@@ -174,6 +209,25 @@ async function getFileImages(fileId, ids){
     return ret
 }
 
+
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
 //return the index file when requested
 app.get("/", async function (req, res) {
     res.sendFile(path.join(__dirname, "/index.html"));
@@ -202,6 +256,61 @@ app.get("/user", async function (req, res) {
 
     res.send(ret);
 });
+
+//team projects
+app.post("/teamProjectsall", async function (req, res) {
+    req.on('data', async (chunk) => {
+        console.log(req["query"]);
+        console.log(JSON.parse(chunk));
+        let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        console.log(result);
+        AccessToken = result["access_token"];
+        console.log(AccessToken);
+        let result2 = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+        console.log(JSON.stringify(result2));
+        let result3 = "";
+        var all_project_files = [];
+
+        let ret = "<ng-container>";
+        for(var i = 0; i < result2["projects"].length; ++i){
+
+
+
+             result3 = await getProjectFilesAuth(result2["projects"][i]["id"]).catch(error => console.log(error));
+             let resultimagefinal = await getFileAuth(result3["files"][0]["key"]).catch(error => console.log(error));
+
+             result3["id"] = result2["projects"][i]["id"];
+             result3["name"] = result2["projects"][i]["name"];
+             result3["thumbnailUrl"] = resultimagefinal["thumbnailUrl"];
+              ret += "<div class = 'feature_panel' >";
+              ret += "<label for = 'featurelabel' class = 'feature_label'>";
+              ret += result3["name"];
+              ret += "</label>";
+              ret += "<p class = 'feature_paragraph'>";
+              ret += "Last Modified: " + result3["files"][0]["last_modified"];
+              ret += "</p>";
+              ret += "<div class = 'project_image'>";
+              ret += "<img src = '";
+              ret += resultimagefinal["thumbnailUrl"] + "'/>";
+              ret += "</div>";
+              ret += "<button class = 'feature_button'> View Features </button>";
+
+             console.log(result3);
+             all_project_files.push(result3);
+        }
+
+        ret+= "</ng-container>";
+
+        console.log(ret);
+        // res.send(ret);
+        res.send(JSON.stringify(all_project_files));
+
+
+    });
+    
+});
+
+
 
 //team projects
 app.get("/teamProjects", async function (req, res) {
@@ -233,6 +342,8 @@ app.get("/file", async function (req, res) {
     ret += "</body>";
     ret += "</html>";
 
+
+    console.log(result["thumbnailUrl"]);
     res.send(ret);
     
 });
