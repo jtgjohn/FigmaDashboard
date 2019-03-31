@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpParams} from '@angular/common/http';
 import {HttpClient, HttpEventType, HttpHeaders, HttpRequest} from "@angular/common/http";
+import { Params } from '@angular/router';
 
 import {ActivatedRoute} from '@angular/router';
-
+import {Router} from '@angular/router';
 
 export interface Project{
 	title:string,
 	thumbnail_url: string,
-	last_modified: string
+	last_modified: string,
+	id: string
 };
 
 
@@ -20,7 +22,8 @@ export interface Project{
 export class HomeComponent implements OnInit {
 	code:string = "";
 	projects:Project[] = [];
-  constructor(private activatedRoute: ActivatedRoute, private http: HttpClient) { }
+  constructor(private activatedRoute: ActivatedRoute, private http: HttpClient,
+  	  private router: Router) { }
 
 
   getProjects(code: string){
@@ -54,6 +57,7 @@ export class HomeComponent implements OnInit {
          	proj.title = res[i]["name"];
          	proj.thumbnail_url = res[i]["thumbnailUrl"];
          	proj.last_modified = res[i]["files"][0]["last_modified"];
+         	proj.id = res[i]["id"];
          	this.projects.push(proj);
          }
        
@@ -62,6 +66,12 @@ export class HomeComponent implements OnInit {
       });
 	
 
+
+  }
+
+  view_features(id){
+  	console.log("PROJ ID: " + id);
+  	  this.router.navigate(['/features', id], { preserveQueryParams: true });
 
   }
 

@@ -257,6 +257,23 @@ app.get("/user", async function (req, res) {
     res.send(ret);
 });
 
+
+
+app.post("/projectsbyid", async function (req, res){
+    req.on('data', async (chunk) => {
+        console.log("BY ID PROJECTS");
+        let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        console.log(result);
+        AccessToken = result["access_token"];
+        let result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
+        console.log(result2);
+
+        res.send(JSON.stringify(result2));
+
+    });
+});
+
+
 //team projects
 app.post("/teamProjectsall", async function (req, res) {
     req.on('data', async (chunk) => {
