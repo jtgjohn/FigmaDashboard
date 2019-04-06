@@ -262,10 +262,21 @@ app.get("/user", async function (req, res) {
 app.post("/projectsbyid", async function (req, res){
     req.on('data', async (chunk) => {
         console.log("BY ID PROJECTS");
-        let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-        console.log(result);
-        AccessToken = result["access_token"];
+        // let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        // console.log(result);
+        // AccessToken = result["access_token"];
         let result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
+
+        
+        for(var i = 0; i < result2["files"].length; ++i){
+            console.log("Hello");
+            let result3 = await getFileAuth(result2["files"][i]["key"]).catch(error => console.log(error));
+            // console.log("RESULT3 %j", result3);
+            result2["files"][i]["thumbnailUrl"] = result3["thumbnailUrl"];
+        }
+
+        console.log("RESULT2");
+
         console.log(result2);
 
         res.send(JSON.stringify(result2));
@@ -279,10 +290,12 @@ app.post("/teamProjectsall", async function (req, res) {
     req.on('data', async (chunk) => {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
-        let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-        console.log(result);
-        AccessToken = result["access_token"];
-        console.log(AccessToken);
+        if(AccessToken == ""){
+            let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+            console.log(result);
+            AccessToken = result["access_token"];
+            console.log(AccessToken);
+        }
         let result2 = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
         console.log(JSON.stringify(result2));
         let result3 = "";

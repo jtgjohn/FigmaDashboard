@@ -8,6 +8,15 @@ import {HttpParams} from '@angular/common/http';
 import { Params } from '@angular/router';
 
 
+export interface Feature{
+  title:string,
+  thumbnail_url: string,
+  last_modified: string,
+  id: string
+};
+
+
+
 @Component({
   selector: 'app-features',
   templateUrl: './features.component.html',
@@ -16,6 +25,9 @@ import { Params } from '@angular/router';
 export class FeaturesComponent implements OnInit {
   id = "";
   code = "";
+  features:Feature[] = [];
+  project_name = "";
+
   constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
   getFiles(code: string){
@@ -33,6 +45,8 @@ export class FeaturesComponent implements OnInit {
     });
   }
   ngOnInit() {
+
+
   	  // let id = this.route.snapshot.paramMap.get('id');
   	  // console.log(id);
   	 this.route.params.subscribe(params => {
@@ -43,20 +57,23 @@ export class FeaturesComponent implements OnInit {
   	 this.route.queryParams.subscribe(params => {
         console.log(params);
         this.code = params["code"];
+        this.project_name = params["project_name"];
     });
 
 
+     document.getElementById("projecttitle").innerHTML = this.project_name;
+
   	 this.getFiles(this.code).subscribe((res:any) => {
          console.log(res);
-         // for(var i = 0; i < res.length; ++i){
-         // 	var proj = {} as Project;
-         // 	proj.title = res[i]["name"];
-         // 	proj.thumbnail_url = res[i]["thumbnailUrl"];
-         // 	proj.last_modified = res[i]["files"][0]["last_modified"];
-         // 	proj.id = res[i]["id"];
-         // 	this.projects.push(proj);
-         // }
-       
+         for(var i = 0; i < res["files"].length; ++i){
+         	var proj = {} as Feature;
+         	proj.title = res["files"][i]["name"];
+         	proj.thumbnail_url = res["files"][i]["thumbnailUrl"];
+         	proj.last_modified = res["files"][i]["last_modified"];
+         	proj.id = res["files"][i]["id"];
+         	this.features.push(proj);
+         }
+         console.log(this.features);
       }, (err) => {
         console.log(err);
       });

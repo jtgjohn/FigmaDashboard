@@ -9,7 +9,7 @@
 		<path d="M12.0002 20.5V19.5H26.047L19.8986 13.3516L20.6017 12.6484L27.9533 20L20.6017 27.3516L19.8986 26.6484L26.047 20.5H12.0002Z" fill="black"/>
 		</svg>
 	</div>
-<label for="uname" class = "navbarheadingproject"><b>Edge</b></label>
+<label for="uname" class = "navbarheadingproject" ><p id = "projecttitle"></p></label>
 
 
 	<div class = "icon">
@@ -26,7 +26,37 @@
 <br/>
 <div class =  "all_features_panel">
 
+<ng-container *ngFor="let pr of features" >
 	<div class = "feature_panel" >
+		<label for = "featurelabel" class = "feature_label">
+			{{pr.title}}
+		</label>
+
+		<p class = "feature_paragraph">
+			Last Modified: {{pr.last_modified}}
+
+
+		</p>
+
+
+		<div class = "project_image">
+			<img src = "{{pr.thumbnail_url}}"/>
+
+		</div> 
+
+
+		<button class = "feature_button" (click)="view_features(pr.id)"> View Versions </button>
+		
+
+		
+
+	</div> 
+
+	<br/>
+	<br/>
+	<br/>
+	</ng-container>
+	<!-- <div class = "feature_panel" >
 		<label for = "featurelabel" class = "feature_label">
 			 Feature 1
 		</label>
@@ -76,6 +106,6 @@
 		</div>
 
 			<button class = "feature_button"> View Versions </button>
-	</div>
+	</div> -->
 
 </div>

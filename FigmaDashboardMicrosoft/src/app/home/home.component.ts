@@ -21,7 +21,9 @@ export interface Project{
 })
 export class HomeComponent implements OnInit {
 	code:string = "";
+  state:string = "";
 	projects:Project[] = [];
+  queryParams: Params = null;
   constructor(private activatedRoute: ActivatedRoute, private http: HttpClient,
   	  private router: Router) { }
 
@@ -45,7 +47,9 @@ export class HomeComponent implements OnInit {
   	this.activatedRoute.queryParams.subscribe(params => {
         console.log(params);
         this.code = params["code"];
+        this.state = params["state"];
     });
+
 
 
     this.getProjects(this.code)
@@ -69,9 +73,11 @@ export class HomeComponent implements OnInit {
 
   }
 
-  view_features(id){
+  view_features(id, name){
   	console.log("PROJ ID: " + id);
-  	  this.router.navigate(['/features', id], { preserveQueryParams: true });
+    this.queryParams = {code: this.code, state: this.state, project_name: name};
+  	  this.router.navigate(['/features', id],     {   relativeTo: this.activatedRoute,
+queryParams: this.queryParams, queryParamsHandling: "merge" });
 
   }
 
