@@ -4,9 +4,12 @@
 	src: url('../segoeui.ttf');
 }
 
+#projecttitle{
+	display: inline;
+}
 .navbar{
 	position: absolute;
-	width: 1024px;
+	width: 100%;
 	height: 38px;
 	left: 0px;
 	top: 0px;
@@ -21,7 +24,7 @@
 	left: -34px;
 	top: 1px;
 
-	font-family: 'segoeui';
+	font-family: 'segoeui', 'Open Sans';
 	font-size: 24px;
 	line-height: normal;
 	text-align: center;
@@ -38,13 +41,17 @@
 
 .navbarheadingproject{
 	right: 840px;
-	font-family: 'segoeui';
+	font-family: 'segoeui', 'Open Sans';
 	font-size: 24px;
+	left: 80px;
 	line-height: normal;
 	text-align: center;
 	position: absolute;
 	color: #000000;
 	top: 1px;
+	width: 300px;
+	display: inline;
+	font-weight: bold;
 }
 
 .icon{
@@ -60,9 +67,8 @@
 }
 .feature_panel{
 	position: relative;
-	width: 961px;
+	width: 100%;
 	height: 330px;
-	left: 33px;
 	
 
 	background: rgba(0, 120, 215, 0.7);
@@ -70,12 +76,13 @@
 
 
 .feature_button{
-	font-family: 'segoeui';
-	position: relative;
+	font-family: 'segoeui', 'Open Sans';
+	position: absolute;
 	width: 120px;
 	height: 32px;
-	right: 160px;
-	top: 258px;
+	right: 815px;
+	top: 240px;
+	left: 25px;
 
 }
 
@@ -86,11 +93,12 @@
 	left: 20px;
 	top: 19px;
 
-	font-family: 'segoeui';
+	font-family: 'segoeui', 'Open Sans';
 	font-size: 36px;
 	line-height: normal;
 
 	color: #000000;
+	display: inline;
 
 }
 
@@ -103,7 +111,7 @@
 	left: 25px;
 	top: 80px;
 
-	font-family: 'segoeui';
+	font-family: 'segoeui', 'Open Sans';
 	font-size: 18px;
 	line-height: normal;
 

@@ -15,7 +15,7 @@
 		<path d="M12.0002 20.5V19.5H26.047L19.8986 13.3516L20.6017 12.6484L27.9533 20L20.6017 27.3516L19.8986 26.6484L26.047 20.5H12.0002Z" fill="black"/>
 		</svg>
 	</div>
-<label for="uname" class = "navbarheadingprojectfeature"><b>Feature 1</b></label>
+<label for="uname" class = "navbarheadingprojectfeature"><p id = "featuretitle"></p></label>
 
 
 	<div class = "icon">
@@ -35,11 +35,26 @@
 
 
 <div class = "export_button_panel">
-	<button class = "export_button"> Export New Design </button>
+	
+	<button class = "export_button" (click) = "addnewversion()" *ngIf = "panelvisible == false"> Add New Version </button>
+
+
+	<div class = "gear_parent">
+	  <input class = "rep_link" *ngIf = "changeworthy === true" (keyup)="onKey($event)" placeholder= "Repository Link" >
+	  
+
+
+
+	<a (click)="viewRepLink()" class = "gear_icon_svg">
+
 
 		<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class = "gearicon">
 	<path d="M25.9297 19.7188C25.9297 19.7656 25.9297 19.8125 25.9297 19.8594C25.9349 19.9062 25.9375 19.9531 25.9375 20C25.9375 20.0469 25.9349 20.0938 25.9297 20.1406C25.9297 20.1875 25.9297 20.2344 25.9297 20.2812L27.9531 21.5391L26.7109 24.5312L24.3906 24C24.2656 24.1354 24.1354 24.2656 24 24.3906L24.5312 26.7109L21.5391 27.9531L20.2812 25.9297C20.2344 25.9297 20.1875 25.9323 20.1406 25.9375C20.0938 25.9375 20.0469 25.9375 20 25.9375C19.9531 25.9375 19.9062 25.9375 19.8594 25.9375C19.8125 25.9323 19.7656 25.9297 19.7188 25.9297L18.4609 27.9531L15.4688 26.7109L16 24.3906C15.8646 24.2656 15.7344 24.1354 15.6094 24L13.2891 24.5312L12.0469 21.5391L14.0703 20.2812C14.0703 20.2344 14.0677 20.1875 14.0625 20.1406C14.0625 20.0938 14.0625 20.0469 14.0625 20C14.0625 19.9531 14.0625 19.9062 14.0625 19.8594C14.0677 19.8125 14.0703 19.7656 14.0703 19.7188L12.0469 18.4609L13.2891 15.4688L15.6094 16C15.7344 15.8646 15.8646 15.7344 16 15.6094L15.4688 13.2891L18.4609 12.0469L19.7188 14.0703C19.7656 14.0703 19.8125 14.0703 19.8594 14.0703C19.9062 14.0651 19.9531 14.0625 20 14.0625C20.0469 14.0625 20.0938 14.0651 20.1406 14.0703C20.1875 14.0703 20.2344 14.0703 20.2812 14.0703L21.5391 12.0469L24.5312 13.2891L24 15.6094C24.1354 15.7344 24.2656 15.8646 24.3906 16L26.7109 15.4688L27.9531 18.4609L25.9297 19.7188ZM25.0156 20.7344C25.026 20.6094 25.0365 20.487 25.0469 20.3672C25.0573 20.2422 25.0625 20.1172 25.0625 19.9922C25.0625 19.8724 25.0573 19.75 25.0469 19.625C25.0365 19.5 25.026 19.3776 25.0156 19.2578L26.8594 18.1094L26.1875 16.4844L24.0703 16.9766C23.9089 16.7786 23.7422 16.5964 23.5703 16.4297C23.4036 16.263 23.2214 16.0964 23.0234 15.9297L23.5156 13.8125L21.8906 13.1406L20.7344 14.9844C20.6146 14.974 20.4922 14.9635 20.3672 14.9531C20.2422 14.9427 20.1198 14.9375 20 14.9375C19.875 14.9375 19.75 14.9427 19.625 14.9531C19.5052 14.9635 19.3828 14.974 19.2578 14.9844L18.1094 13.1406L16.4844 13.8125L16.9766 15.9297C16.7786 16.0911 16.5964 16.2578 16.4297 16.4297C16.263 16.5964 16.0964 16.7786 15.9297 16.9766L13.8125 16.4844L13.1406 18.1094L14.9844 19.2656C14.974 19.3906 14.9635 19.5156 14.9531 19.6406C14.9427 19.7604 14.9375 19.8828 14.9375 20.0078C14.9375 20.1276 14.9427 20.25 14.9531 20.375C14.9635 20.5 14.974 20.6224 14.9844 20.7422L13.1406 21.8906L13.8125 23.5156L15.9297 23.0234C16.0911 23.2214 16.2552 23.4036 16.4219 23.5703C16.5938 23.737 16.7786 23.9036 16.9766 24.0703L16.4844 26.1875L18.1094 26.8594L19.2656 25.0156C19.3854 25.026 19.5078 25.0365 19.6328 25.0469C19.7578 25.0573 19.8802 25.0625 20 25.0625C20.125 25.0625 20.2474 25.0573 20.3672 25.0469C20.4922 25.0365 20.6172 25.026 20.7422 25.0156L21.8906 26.8594L23.5156 26.1875L23.0234 24.0703C23.2214 23.9089 23.4036 23.7448 23.5703 23.5781C23.737 23.4062 23.9036 23.2214 24.0703 23.0234L26.1875 23.5156L26.8594 21.8906L25.0156 20.7344ZM20 17.0625C20.4062 17.0625 20.7865 17.1406 21.1406 17.2969C21.5 17.4479 21.8125 17.6562 22.0781 17.9219C22.3438 18.1875 22.5521 18.5 22.7031 18.8594C22.8594 19.2135 22.9375 19.5938 22.9375 20C22.9375 20.4062 22.8594 20.7891 22.7031 21.1484C22.5521 21.5026 22.3438 21.8125 22.0781 22.0781C21.8125 22.3438 21.5 22.5547 21.1406 22.7109C20.7865 22.862 20.4062 22.9375 20 22.9375C19.5938 22.9375 19.2109 22.862 18.8516 22.7109C18.4974 22.5547 18.1875 22.3438 17.9219 22.0781C17.6562 21.8125 17.4453 21.5026 17.2891 21.1484C17.138 20.7891 17.0625 20.4062 17.0625 20C17.0625 19.5938 17.138 19.2135 17.2891 18.8594C17.4453 18.5 17.6562 18.1875 17.9219 17.9219C18.1875 17.6562 18.4974 17.4479 18.8516 17.2969C19.2109 17.1406 19.5938 17.0625 20 17.0625ZM20 22.0625C20.2865 22.0625 20.5547 22.0104 20.8047 21.9062C21.0547 21.7969 21.2734 21.6484 21.4609 21.4609C21.6484 21.2734 21.7943 21.0547 21.8984 20.8047C22.0078 20.5547 22.0625 20.2865 22.0625 20C22.0625 19.7135 22.0078 19.4453 21.8984 19.1953C21.7943 18.9453 21.6484 18.7266 21.4609 18.5391C21.2734 18.3516 21.0547 18.2057 20.8047 18.1016C20.5547 17.9922 20.2865 17.9375 20 17.9375C19.7135 17.9375 19.4453 17.9922 19.1953 18.1016C18.9453 18.2057 18.7266 18.3516 18.5391 18.5391C18.3516 18.7266 18.2031 18.9453 18.0938 19.1953C17.9896 19.4453 17.9375 19.7135 17.9375 20C17.9375 20.2865 17.9896 20.5547 18.0938 20.8047C18.2031 21.0547 18.3516 21.2734 18.5391 21.4609C18.7266 21.6484 18.9453 21.7969 19.1953 21.9062C19.4453 22.0104 19.7135 22.0625 20 22.0625Z" fill="black"/>
 	</svg>
+
+	</a>
+
+	</div>
 
 </div>
 
@@ -51,9 +66,87 @@
 <br/>
 <br/>
 
+
+
+
+
 <div class =  "all_features_panel">
 
+	<div class = "add_version_panel" *ngIf = "panelvisible == true">
+		<label for = "featurelabel" class = "feature_label">
+			 02/15/2019 14:30
+		</label>
+	  <input class = "whatsnew" (keyup)="onKey($event)" placeholder= "What's New?" >
+
+	  <select [compareWith]="compareFn" [ngStyle]="{'background-color': colorversion}"  [(ngModel)]="colorversion" 
+			class = "approval_dropdown_version"  >
+
+			  <option value="#F2F2F2" class = "whiteoption" [selected] = "true"> Status </option>
+			  <option value="#F2C94C" class = "yellowoption" > Request Approval </option>
+			  <option value="#BDBDBD" class = "grayoption"> Draft </option>
+	  </select>
+
+
+	   <select [compareWith]="compareFn" [ngStyle]="{'background-color': colorversionreview}"  [(ngModel)]="colorversionreview" 
+			class = "reviewer_dropdown_version"  >
+
+			  <option value="#F2F2F2" class = "whiteoption" [selected] = "true"> Reviewer </option>
+			  <option value="#BDBDBD" class = "grayoption" > John </option>
+			  <option value="#BDBDBD" class = "grayoption"> Rutvik </option>
+	  </select>
+	  	<button class = "export_button_version_add" (click) = "addnewversion()"> Add New Version </button>
+
+	  	<mat-checkbox class = "readyexports">Ready for Export?</mat-checkbox>
+
+
+		<!-- <p class = "feature_paragraph">
+			Submitted by: Andrew
+
+
+
+
+
+		</p>
+ -->
+
+	</div>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+
+	<ng-container *ngFor="let pr of designs" >
 	<div class = "feature_panel" >
+		<label for = "featurelabel" class = "feature_label">
+			{{pr.title}}
+		</label>
+
+		<!-- <p class = "feature_paragraph">
+			Last Modified: {{pr.last_modified}}
+
+
+		</p>
+ -->
+
+		<div class = "project_image">
+			<img src = "{{pr.thumbnail_url}}"/>
+
+		</div> 
+
+
+		<!-- <button class = "feature_button" (click)="view_features(pr.id, pr.title)"> View Versions </button> -->
+		
+
+		
+
+	</div> 
+
+	<br/>
+	<br/>
+	<br/>
+	</ng-container>
+
+	<!-- <div class = "feature_panel" >
 		<label for = "featurelabel" class = "feature_label">
 			 02/15/2019 14:30
 		</label>
@@ -83,29 +176,29 @@
 		</div> 
 
 
-		<!-- <select class = "approval_dropdown"     
+		<select class = "approval_dropdown"     
 			
 			(change)="onChange($event.target.value)" id = "second" color = "#F2C94C" style="background-color: #F2C94C">
 			  <option value="Pending Approval" id = "yellowoption">   Pending Approval  </option>
 			  <option value="Approved" id = "greenoption">     Approved   </option>
 			  <option value="Changes Requested" id = "redoption">    Changes Requested  </option>
-			</select> -->
+			</select>
 			
 			<select [compareWith]="compareFn" [ngStyle]="{'background-color': color}"  [(ngModel)]="color" 
 			class = "approval_dropdown" id = "1sel" >
 
-			  <option value="#F2C94C" id = "yellowoption" [selected] = "true"> Pending Approval</option>
-			  <option value="#6FCF97" id = "greenoption" >Approved</option>
-			  <option value="#EB5757" id = "redoption"> Changes Requested </option>
+			  <option value="#F2C94C" class = "yellowoption" [selected] = "true"> Pending Approval</option>
+			  <option value="#6FCF97" class = "greenoption" >Approved</option>
+			  <option value="#EB5757" class = "redoption"> Changes Requested </option>
 			</select>
 		
 
 
 		
 
-	</div>
+	</div> -->
 
-	<br/>
+	<!-- <br/>
 	<br/>
 	<br/>
 	<br/>
@@ -139,11 +232,11 @@
 
 			<select [ngStyle]="{'background-color': color1}"  style = "background-color: #F2C94C"[(ngModel)]="color1"
 			class = "approval_dropdown" id = "2sel">
-			  <option value="#F2C94C" id = "yellowoption">Pending Approval</option>
-			  <option value="#6FCF97" id = "greenoption">Approved</option>
-			  <option value="#EB5757" id = "redoption"> Changes Requested </option>
+			  <option value="#F2C94C" class = "yellowoption">Pending Approval</option>
+			  <option value="#6FCF97" class = "greenoption">Approved</option>
+			  <option value="#EB5757" class = "redoption"> Changes Requested </option>
 			</select>
 		
-	</div>
+	</div> -->
 
 </div>

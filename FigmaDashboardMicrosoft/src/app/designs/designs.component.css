@@ -20,7 +20,7 @@
 	left: -34px;
 	top: 1px;
 
-	font-family: 'segoeui';
+	font-family: 'segoeui',  'Open Sans';
 	font-size: 24px;
 	line-height: normal;
 	text-align: center;
@@ -53,21 +53,83 @@
 	margin: 0 auto;
 }
 
+
+.add_version_panel{
+	
+
+position: relative;
+	width: 70%;
+	height: 380px;
+	left: 15%;
+
+background: rgba(0, 120, 215, 0.7);
+}
+
+
+.gear_icon_svg{
+	position:relative;
+
+}
+
+.rep_link{
+	position: relative;
+width: 191px;
+height: 32px;
+left: 720px;
+font-family: 'segoeui', 'Open Sans';
+}
+
+.whatsnew{
+	position: relative;
+width: 380px;
+height: 32px;
+right: 230px;
+top: 75px;
+font-family: 'segoeui', 'Open Sans';
+}
+
+
+
+.gear_parent{
+	width: 400px;
+	display: inline-block;
+}
 .export_button{
 	background: rgba(0, 120, 215, 0.4);
-	font-family: 'segoeui';
+	font-family: 'segoeui',  'Open Sans';
 	font-size: 14px;
 	width: 216px;
 	height: 32px;
 }
 
+.readyexports{
+	font-family: 'segoeui', 'Open Sans';
+	font-size: 18px;
+	line-height: normal;
+	top: 175px;
+	right: 145px;
+	position: relative;
+}
+
+
+
 .export_panel{
 	width: 100%;
 }
 
+.export_button_version_add{
+	background-color: #F2F2F2;
+	font-family: 'segoeui',  'Open Sans';
+	font-size: 14px;
+	width: 216px;
+	height: 32px;
+	top: 250px;
+	left: 350px;
+	position: relative;
+}
 
 .gearicon{
-	left: 600px;
+	left: 710px;
 	position: relative;
 }
 
@@ -105,9 +167,9 @@
 }
 .feature_panel{
 	position: relative;
-	width: 1200px;
+	width: 90%;
 	height: 380px;
-	left: 20%;
+	left: 5%;
 
 
 	
@@ -117,23 +179,29 @@
 
 
 .feature_button{
-	font-family: 'segoeui';
+	font-family: 'segoeui',  'Open Sans';
 	position: relative;
 	width: 120px;
 	height: 32px;
 	right: 160px;
 	top: 258px;
 
+
+}
+
+
+#featuretitle{
+	font-weight: bold;
+	display: inline;
 }
 
 .feature_label{
 	position: relative;
-	width: 300px;
 	height: 48px;
 	left: 20px;
 	top: 19px;
 
-	font-family: 'segoeui';
+	font-family: 'segoeui',  'Open Sans';
 	font-size: 36px;
 	line-height: normal;
 
@@ -144,7 +212,7 @@
 
 .comments_options{
 	position: absolute;
-	font-family: 'segoeui';
+	font-family: 'segoeui', 'Open Sans';
 	width: 200px;
 	left: 155px;
 	top: 180px;
@@ -152,13 +220,39 @@
 }
 
 
+.reviewer_dropdown_version{
+	position: relative;
+	right: 600px;
+	top: 140px;
+	font-family: 'segoeui', 'Open Sans';
+	width: 224px;
+	height: 32px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 20px;
+	background-color: #F2C94C;
+}
+.approval_dropdown_version{
+	position: relative;
+	right: 610px;
+	top: 140px;
+	bottom: 188px;
+	font-family: 'segoeui',  'Open Sans';
+	width: 224px;
+	height: 32px;
+	text-align: center;
+	font-size: 14px;
+	line-height: 20px;
+	background-color: #F2C94C;
+}
+
 .approval_dropdown{
 	position: relative;
 	left: 25px;
 	right: 745px;
 	top: 50px;
 	bottom: 188px;
-	font-family: 'segoeui';
+	font-family: 'segoeui',  'Open Sans';
 	width: 224px;
 	height: 32px;
 	text-align: center;
@@ -168,8 +262,16 @@ background-color: #F2C94C;
 
 }
 
-#greenoption{
+.greenoption{
 	background-color: #6FCF97;
+}
+
+.whiteoption{
+	background-color: #F2F2F2;
+}
+
+.grayoption{
+	background-color: #BDBDBD;
 }
 
 .repository_link {
@@ -182,12 +284,12 @@ background-color: #F2C94C;
   height: 25px;
 }
 
-#redoption{
+.redoption{
 	background-color: #EB5757;
 
 }
 
-#yellowoption{
+.yellowoption{
 	background-color: #F2C94C;
 
 }
@@ -201,7 +303,7 @@ background-color: #F2C94C;
 	left: 25px;
 	top: 20px;
 
-	font-family: 'segoeui';
+	font-family: 'segoeui',  'Open Sans';
 	font-size: 18px;
 	line-height: normal;
 

@@ -9,8 +9,8 @@ const routes: Routes = [
 { path: '', redirectTo: '/login', pathMatch: 'full'},
  {path: 'login', component: LoginComponent},
  {path: 'home', component: HomeComponent},
- {path: 'features', component: FeaturesComponent},
- {path: 'designs', component: DesignsComponent}
+ {path: 'features/:project_id', component: FeaturesComponent},
+ {path: 'designs/:feature_id', component: DesignsComponent}
  
      
      
