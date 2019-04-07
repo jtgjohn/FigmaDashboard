@@ -18,6 +18,10 @@ export interface Status{
 export class DesignsComponent implements OnInit {
 	color = "";	
 	color1 = "";
+	colorversion = "";
+	colorversionreview = "";
+	changeworthy:boolean = false;
+	panelvisible:boolean = false;
 
 	compareFn(c1: Status, c2: Status): boolean {
     return c1 && c2 ? c1.color === c2.color : c1 === c2;
@@ -38,12 +42,22 @@ export class DesignsComponent implements OnInit {
 
 	this.color = "#F2C94C";
 	this.color1 = "#F2C94C";
+	this.colorversion= "#F2F2F2";
+	this.colorversionreview = "#F2F2F2";
   // 	const ele = this.input.nativeElement as HTMLElement;
   // ele.click();
   // 	 (<HTMLSelectElement>document.getElementById("1sel")).value = "Pending Approval";
   // 	 (<HTMLSelectElement>document.getElementById("2sel")).value = "Pending Approval";
   }
 
+
+  viewRepLink(){
+  	this.changeworthy = !this.changeworthy;
+  }
+
+  addnewversion(){
+  	this.panelvisible = !this.panelvisible;
+  }
  //  onChange(newValue) {
 	// console.log(newValue);
 	// var select_val = document.getElementById("second");
