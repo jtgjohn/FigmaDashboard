@@ -24,11 +24,15 @@ export interface Feature{
 })
 export class FeaturesComponent implements OnInit {
   id = "";
-  code = "";
+  
+  code:string = "";
+  state:string = "";
   features:Feature[] = [];
   project_name = "";
+   queryParams: Params = null;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) { }
+  constructor(private activatedRoute: ActivatedRoute, private http: HttpClient,
+      private router: Router) { }
 
   getFiles(code: string){
      var datax;
@@ -49,12 +53,12 @@ export class FeaturesComponent implements OnInit {
 
   	  // let id = this.route.snapshot.paramMap.get('id');
   	  // console.log(id);
-  	 this.route.params.subscribe(params => {
+  	 this.activatedRoute.params.subscribe(params => {
       console.log(params) //log the entire params object
       console.log(params['project_id']) //log the value of id
       this.id = params['project_id'];
     });
-  	 this.route.queryParams.subscribe(params => {
+  	 this.activatedRoute.queryParams.subscribe(params => {
         console.log(params);
         this.code = params["code"];
         this.project_name = params["project_name"];
@@ -70,7 +74,7 @@ export class FeaturesComponent implements OnInit {
          	proj.title = res["files"][i]["name"];
          	proj.thumbnail_url = res["files"][i]["thumbnailUrl"];
          	proj.last_modified = res["files"][i]["last_modified"];
-         	proj.id = res["files"][i]["id"];
+         	proj.id = res["files"][i]["key"];
          	this.features.push(proj);
          }
          console.log(this.features);
@@ -79,6 +83,14 @@ export class FeaturesComponent implements OnInit {
       });
 
 
+
+  }
+
+
+  view_features(id, name){
+     this.queryParams = {code: this.code, state: this.state, feature_name: name};
+      this.router.navigate(['/designs', id],     {   relativeTo: this.activatedRoute,
+queryParams: this.queryParams, queryParamsHandling: "merge" });
 
   }
 

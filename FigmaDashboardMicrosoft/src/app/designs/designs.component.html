@@ -15,7 +15,7 @@
 		<path d="M12.0002 20.5V19.5H26.047L19.8986 13.3516L20.6017 12.6484L27.9533 20L20.6017 27.3516L19.8986 26.6484L26.047 20.5H12.0002Z" fill="black"/>
 		</svg>
 	</div>
-<label for="uname" class = "navbarheadingprojectfeature"><b>Feature 1</b></label>
+<label for="uname" class = "navbarheadingprojectfeature"><p id = "featuretitle"></p></label>
 
 
 	<div class = "icon">
@@ -115,7 +115,38 @@
 	<br/>
 	<br/>
 
+	<ng-container *ngFor="let pr of designs" >
 	<div class = "feature_panel" >
+		<label for = "featurelabel" class = "feature_label">
+			{{pr.title}}
+		</label>
+
+		<!-- <p class = "feature_paragraph">
+			Last Modified: {{pr.last_modified}}
+
+
+		</p>
+ -->
+
+		<div class = "project_image">
+			<img src = "{{pr.thumbnail_url}}"/>
+
+		</div> 
+
+
+		<!-- <button class = "feature_button" (click)="view_features(pr.id, pr.title)"> View Versions </button> -->
+		
+
+		
+
+	</div> 
+
+	<br/>
+	<br/>
+	<br/>
+	</ng-container>
+
+	<!-- <div class = "feature_panel" >
 		<label for = "featurelabel" class = "feature_label">
 			 02/15/2019 14:30
 		</label>
@@ -145,13 +176,13 @@
 		</div> 
 
 
-		<!-- <select class = "approval_dropdown"     
+		<select class = "approval_dropdown"     
 			
 			(change)="onChange($event.target.value)" id = "second" color = "#F2C94C" style="background-color: #F2C94C">
 			  <option value="Pending Approval" id = "yellowoption">   Pending Approval  </option>
 			  <option value="Approved" id = "greenoption">     Approved   </option>
 			  <option value="Changes Requested" id = "redoption">    Changes Requested  </option>
-			</select> -->
+			</select>
 			
 			<select [compareWith]="compareFn" [ngStyle]="{'background-color': color}"  [(ngModel)]="color" 
 			class = "approval_dropdown" id = "1sel" >
@@ -165,9 +196,9 @@
 
 		
 
-	</div>
+	</div> -->
 
-	<br/>
+	<!-- <br/>
 	<br/>
 	<br/>
 	<br/>
@@ -206,6 +237,6 @@
 			  <option value="#EB5757" class = "redoption"> Changes Requested </option>
 			</select>
 		
-	</div>
+	</div> -->
 
 </div>

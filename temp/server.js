@@ -407,6 +407,33 @@ function findID(mapItem, id) {
     return ret;
 }
 
+
+app.post("/fileImagebyFeature", async function (req, res) {
+    req.on('data', async (chunk) => {
+        console.log(req["query"]);
+        console.log(JSON.parse(chunk));
+        if(AccessToken == ""){
+            let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+            console.log(result);
+            AccessToken = result["access_token"];
+            console.log(AccessToken);
+        }
+        let file = await getFileAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
+        console.log(file);
+        console.log("intermediate");
+
+        let picID = findID(file["document"], featureName);
+        console.log(picID);
+        let result = await getFileImagesAuth(JSON.parse(chunk)["id"], picID).catch(error => console.log(error));
+        result["lastModified"] = file["lastModified"];
+        console.log(result);
+        res.send(JSON.stringify(result));
+
+
+    });
+    
+});
+
 //FileImages
 app.get("/fileImage", async function (req, res) {
     let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));

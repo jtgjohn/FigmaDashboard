@@ -68,7 +68,7 @@ background: rgba(0, 120, 215, 0.7);
 
 .gear_icon_svg{
 	position:relative;
-	
+
 }
 
 .rep_link{
@@ -186,11 +186,17 @@ font-family: 'segoeui', 'Open Sans';
 	right: 160px;
 	top: 258px;
 
+
+}
+
+
+#featuretitle{
+	font-weight: bold;
+	display: inline;
 }
 
 .feature_label{
 	position: relative;
-	width: 300px;
 	height: 48px;
 	left: 20px;
 	top: 19px;
