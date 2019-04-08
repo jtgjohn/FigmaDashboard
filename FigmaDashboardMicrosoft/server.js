@@ -11,6 +11,9 @@ const mongo_url = process.env.MONGO_URL;
 
 app.options('*', cors()); 
 
+AccessToken = "";
+callback = "http://localhost:8080/contents.html";
+callback2 = "http://localhost:4200/home";
 
 async function OAuthGetToken(code){
     let result = await fetch('https://www.figma.com/api/oauth/token', {
@@ -19,9 +22,9 @@ async function OAuthGetToken(code){
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "client_id": clientID,
-            "client_secret": clientSec,
-            "redirect_uri": callback2,
+            "client_id": process.env.clientID,
+            "client_secret": process.env.clientSec,
+            "redirect_uri":     callback2,
             "code": code,
             "grant_type": "authorization_code"
         });
