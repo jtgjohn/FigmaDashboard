@@ -3,56 +3,16 @@ var app = express();
 var path = require('path');
 var fetch = require('isomorphic-fetch');
 var cors = require('cors');
+require('dotenv').load();
 
-// var bodyParser = require('body-parser');
-// app.use( bodyParser.json() );       // to support JSON-encoded bodies
-// app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-//   extended: true
-// })); 
+const mongo = require('mongodb').MongoClient;
+const mongo_url = process.env.MONGO_URL;
 
 
 app.options('*', cors()); 
 
-const APIKey = "10028-2e5765d3-df29-400d-b607-722bbac2b14c";
-const teamID = "681911804688300104";
-//const featureID = "205%3A1595";
-const featureName = "Export Feature Dropdown";
-
-//OAuth
-//Client Secret: xGVm6lOTv0do8ca7n0uQIisw6VLuwX
-//Client ID: Me3HgbzpUV5CYdvFfDwipX
-
-clientIDoriginal = "Me3HgbzpUV5CYdvFfDwipX";
-clientSecretoriginal = "xGVm6lOTv0do8ca7n0uQIisw6VLuwX";
-
-clientID = "x1j28cPngqZlHPQRV86vax";
-clientSec = "P8DCUo6PMAzT9bRk9QiFv7xHEZ6rG4";
-AccessToken = "";
-callback = "http://localhost:8080/contents.html";
-callback2 = "http://localhost:4200/home";
-
 
 async function OAuthGetToken(code){
-    let result = await fetch('https://www.figma.com/api/oauth/token', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            "client_id": clientIDoriginal,
-            "client_secret": clientSecretoriginal,
-            "redirect_uri": callback,
-            "code": code,
-            "grant_type": "authorization_code"
-        })
-    })
-
-    let ret = await result.json();
-    console.log("OAUTH RET: %j", ret);
-    return ret;
-}
-
-async function OAuthGetToken2(code){
     let result = await fetch('https://www.figma.com/api/oauth/token', {
         method: "POST",
         headers: {
@@ -64,8 +24,8 @@ async function OAuthGetToken2(code){
             "redirect_uri": callback2,
             "code": code,
             "grant_type": "authorization_code"
-        })
-    })
+        });
+    });
 
     let ret = await result.json();
     return ret;
@@ -74,7 +34,7 @@ async function OAuthGetToken2(code){
 //OAuth
 //=====================================================================================
 async function getUserAuth(){
-    //let result = await fetch('https://api.figma.com/v1/me/' + fileId , {
+
     let result = await fetch('https://api.figma.com/v1/me/', {
         method: 'GET',
         headers: {
@@ -82,10 +42,19 @@ async function getUserAuth(){
         }
     })
 
-    let ret = await result.json()
+    let ret = await result.json();
     console.log("USER AUTH RET: %j",ret);
-    return ret
+    return ret;
 }
+
+// async function checkForToken() {
+//     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+//         if (err) throw err;
+//         var dbo = db.db("figmadb");
+
+//         dbo.collection("users").findOne()
+//     });
+// }
 
 async function getTeamProjectsAuth(teamId){
     let result = await fetch('https://api.figma.com/v1/teams/' + teamId + "/projects", {
@@ -93,11 +62,11 @@ async function getTeamProjectsAuth(teamId){
         headers: {
             'Authorization': 'Bearer ' + AccessToken
         }
-    })
+    });
 
-    let ret = await result.json()
+    let ret = await result.json();
 
-    return ret
+    return ret;
 }
 
 async function getProjectFilesAuth(projectId){
@@ -207,6 +176,45 @@ async function getFileImages(fileId, ids){
     let ret = await result.json()
 
     return ret
+}
+
+function getVersions(featureId, callback) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmadb");
+
+        dbo.collection("featureVersions").find({fid: featureId}).sort({date: 1}).toArray(function(err, result) {
+            if (err) callback(err, null);
+            else callback(null, result);
+            db.close();
+        });
+    });
+}
+
+function getMostRecentVersionImage(featureId, callback) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmadb");
+
+        dbo.collection("featureVersions").find({fid: featureId}).sort({date: 1}).limit(1).toArray(function(err, result) {
+            if (err) callback(err, null);
+            else callback(null, result);
+            db.close();
+        });
+    });
+}
+
+function getVersionInfo(versionId, callback) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmadb");
+
+        dbo.collection("featureVersions").find({_id: versionId}, function(err, result) {
+            if (err) callback(err, null);
+            else callback(null, result);
+            db.close();
+        });
+    });
 }
 
 
