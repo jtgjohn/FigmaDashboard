@@ -262,6 +262,46 @@ function postVersionInfo(info, fid, imagePath, frameChanged) {
     });
 }
 
+function getUserTeams(uEmail, callback) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+
+        dbo.collection("users").findOne({userEmail: uEmail}, function(err, result) {
+            if (err) callback(err, null);
+            else callback(null, result);
+            db.close();
+        });
+    });
+}
+
+function postAddUserTeams(uEmail, team, callback) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+
+        dbo.collection.("users").updateOne({userEmail: uEmail}, {$push: {teams: team}}, function(err, result) {
+            if (err) throw err;
+            db.close();
+        });
+    });
+}
+
+function postRemoveUserTeams(uEmail, team, callback) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+
+        let uTeams = []
+        uTeams = getUserTeams(uEmail);
+        uTeams.splice(uTeams.indexOf(team), 1);
+
+        dbo.collection.("users").updateOne({userEmail: uEmail}, {$push: {teams: uTeam}}, function(err, result) {
+            if (err) throw err;
+            db.close();
+        });
+    });
+}
 
 app.use(function (req, res, next) {
 
