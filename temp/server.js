@@ -471,6 +471,22 @@ app.get("/file", async function (req, res) {
     
 });
 
+
+app.get("/versionInfo", function (req, res) {
+    getVersionInfo(req.vid, function(err, result) {
+        if (err) throw err;
+        else res.send(result);
+    });
+});
+
+app.get("/getVersions", function(req, res) {
+    getVersions(req.fid, function(err, result) {
+        if (err) throw err;
+        else res.send(result);
+    });
+})
+
+
 function findID(mapItem, id) {
     //console.log(mapItem);
     let ret = "";
