@@ -212,11 +212,31 @@ function getVersionInfo(versionId, callback) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        dbo.collection("versions").find({_id: versionId}, function(err, result) {
+        dbo.collection("versions").findOne({_id: versionId}, function(err, result) {
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
         });
+    });
+}
+
+function postComment(versionId, userEmail, comment) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+
+        var date = new Date();
+        var doc = {
+            userEmail: userEmail,
+            commentBody: comment,
+            date = date
+        };
+
+        dbo.collection.("versions").updateOne({_id: versionId}, {$push: {comments: comment}}, function(err, result) {
+            if (err) throw err;
+            db.close();
+        });
+
     });
 }
 
