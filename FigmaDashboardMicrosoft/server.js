@@ -525,9 +525,9 @@ app.get("/fileImage", async function (req, res) {
     let files = await getProjectFiles(projects["projects"][0]["id"]).catch(error => console.log(error));
     let result = await getFileImages(files["files"][0]["key"], featureID).catch(error => console.log(error));
 
-    let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+    projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
     //console.log(projects);
-    let files = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
+    files = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
     //console.log(files)
     let file = await getFileAuth(files["files"][0]["key"]).catch(error => console.log(error));
 
@@ -555,7 +555,7 @@ app.get("/fileImage", async function (req, res) {
     */
 
     //let result = await getFileImagesAuth(files["files"][0]["key"], featureID).catch(error => console.log(error));
-    let result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
+    result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
     //console.log(result);
 
     
