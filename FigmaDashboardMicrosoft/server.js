@@ -3,7 +3,7 @@ var app = express();
 var path = require('path');
 var fetch = require('isomorphic-fetch');
 var cors = require('cors');
-require('dotenv').load();
+require('dotenv').config();
 
 const mongo = require('mongodb').MongoClient;
 const mongo_url = process.env.MONGO_URL;
