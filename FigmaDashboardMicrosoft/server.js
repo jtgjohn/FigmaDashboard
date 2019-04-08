@@ -24,7 +24,7 @@ async function OAuthGetToken(code){
         body: JSON.stringify({
             "client_id": process.env.clientID,
             "client_secret": process.env.clientSec,
-            "redirect_uri":     callback2,
+            "redirect_uri": callback2,
             "code": code,
             "grant_type": "authorization_code"
         });
@@ -184,9 +184,9 @@ async function getFileImages(fileId, ids){
 function getVersions(featureId, callback) {
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("figmadb");
+        var dbo = db.db("figmaDB");
 
-        dbo.collection("featureVersions").find({fid: featureId}).sort({date: 1}).toArray(function(err, result) {
+        dbo.collection("versions").find({fid: featureId}).sort({date: 1}).toArray(function(err, result) {
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
@@ -197,9 +197,9 @@ function getVersions(featureId, callback) {
 function getMostRecentVersionImage(featureId, callback) {
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("figmadb");
+        var dbo = db.db("figmaDB");
 
-        dbo.collection("featureVersions").find({fid: featureId}).sort({date: 1}).limit(1).toArray(function(err, result) {
+        dbo.collection("versions").find({fid: featureId}).sort({date: 1}).limit(1).toArray(function(err, result) {
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
@@ -210,9 +210,9 @@ function getMostRecentVersionImage(featureId, callback) {
 function getVersionInfo(versionId, callback) {
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("figmadb");
+        var dbo = db.db("figmaDB");
 
-        dbo.collection("featureVersions").find({_id: versionId}, function(err, result) {
+        dbo.collection("versions").find({_id: versionId}, function(err, result) {
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
