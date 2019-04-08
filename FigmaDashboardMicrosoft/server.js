@@ -27,7 +27,7 @@ async function OAuthGetToken(code){
             "redirect_uri": callback2,
             "code": code,
             "grant_type": "authorization_code"
-        });
+        })
     });
 
     let ret = await result.json();
@@ -232,7 +232,7 @@ function postComment(versionId, userEmail, comment) {
             timestamp: date
         };
 
-        dbo.collection.("versions").updateOne({_id: versionId}, {$push: {comments: comment}}, function(err, result) {
+        dbo.collection("versions").updateOne({_id: versionId}, {$push: {comments: comment}}, function(err, result) {
             if (err) throw err;
             db.close();
         });
@@ -255,7 +255,7 @@ function postVersionInfo(info, fid, imagePath, frameChanged) {
             timestamp: date
         };
 
-        dbo.collection.("versions").insertOne(doc, function(err, result) {
+        dbo.collection("versions").insertOne(doc, function(err, result) {
             if (err) throw err;
             db.close();
         });
@@ -280,7 +280,7 @@ function postAddUserTeams(uEmail, team, callback) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        dbo.collection.("users").updateOne({userEmail: uEmail}, {$push: {teams: team}}, function(err, result) {
+        dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: team}}, function(err, result) {
             if (err) throw err;
             db.close();
         });
@@ -296,7 +296,7 @@ function postRemoveUserTeams(uEmail, team, callback) {
         uTeams = getUserTeams(uEmail);
         uTeams.splice(uTeams.indexOf(team), 1);
 
-        dbo.collection.("users").updateOne({userEmail: uEmail}, {$push: {teams: uTeam}}, function(err, result) {
+        dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: uTeam}}, function(err, result) {
             if (err) throw err;
             db.close();
         });
