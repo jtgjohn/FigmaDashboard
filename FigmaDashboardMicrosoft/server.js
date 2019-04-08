@@ -229,14 +229,36 @@ function postComment(versionId, userEmail, comment) {
         var doc = {
             userEmail: userEmail,
             commentBody: comment,
-            date = date
+            timestamp: date
         };
 
         dbo.collection.("versions").updateOne({_id: versionId}, {$push: {comments: comment}}, function(err, result) {
             if (err) throw err;
             db.close();
         });
+    });
+}
 
+function postVersionInfo(info, fid, imagePath, frameChanged) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+
+        var date = new Date();
+        var doc = {
+            posterEmail: info.email,
+            status: info.status,
+            reviewerEmail: info.reviewerEmail,
+            imagePath: imagePath,
+            fid: fid,
+            frameChanged: frameChanged,
+            timestamp: date
+        };
+
+        dbo.collection.("versions").insertOne(doc, function(err, result) {
+            if (err) throw err;
+            db.close();
+        });
     });
 }
 
