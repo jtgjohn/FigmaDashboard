@@ -100,6 +100,7 @@ export class DesignsComponent implements OnInit {
         this.project_name = params["project_name"];
         this.feature_name = params["feature_name"];
           	document.getElementById("featuretitle").innerHTML = this.feature_name;
+          	document.getElementById("projecttitle").innerHTML = this.project_name;
 
     });
 
