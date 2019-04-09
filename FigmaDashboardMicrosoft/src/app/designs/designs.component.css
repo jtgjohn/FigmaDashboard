@@ -178,6 +178,11 @@ font-family: 'segoeui', 'Open Sans';
 }
 
 
+.additional_thumbnail{
+	width: 200px;
+	height: 200px;
+}
+
 .feature_button{
 	font-family: 'segoeui',  'Open Sans';
 	position: relative;
