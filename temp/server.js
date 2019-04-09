@@ -24,9 +24,9 @@ async function OAuthGetToken(code){
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "client_id": process.env.clientIDoriginal,
-            "client_secret": process.env.clientSecretoriginal,
-            "redirect_uri": callback,
+            "client_id": process.env.clientID,
+            "client_secret": process.env.clientSec,
+            "redirect_uri": callback2,
             "code": code,
             "grant_type": "authorization_code"
         })
@@ -355,7 +355,7 @@ app.get("/user", async function (req, res) {
 app.post("/projectsbyid", async function (req, res){
     req.on('data', async (chunk) => {
         console.log("BY ID PROJECTS");
-        // let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        // let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
         // console.log(result);
         // AccessToken = result["access_token"];
         let result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
@@ -384,7 +384,7 @@ app.post("/teamProjectsall", async function (req, res) {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
         if(AccessToken == ""){
-            let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+            let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             console.log(result);
             AccessToken = result["access_token"];
             console.log(AccessToken);
@@ -522,7 +522,7 @@ app.post("/fileImagebyFeature", async function (req, res) {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
         if(AccessToken == ""){
-            let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+            let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             console.log(result);
             AccessToken = result["access_token"];
             console.log(AccessToken);
