@@ -76,7 +76,7 @@
 		<label for = "featurelabel" class = "feature_label">
 			 02/15/2019 14:30
 		</label>
-	  <input class = "whatsnew" (keyup)="onKey($event)" placeholder= "What's New?" >
+	  <input class = "whatsnew" (keyup)="onKey($event)" id = "wnew" placeholder= "What's New?" >
 
 	  <select [compareWith]="compareFn" [ngStyle]="{'background-color': colorversion}"  [(ngModel)]="colorversion" 
 			class = "approval_dropdown_version"  >
@@ -87,16 +87,17 @@
 	  </select>
 
 
-	   <select [compareWith]="compareFn" [ngStyle]="{'background-color': colorversionreview}"  [(ngModel)]="colorversionreview" 
+	 <!--   <select [compareWith]="compareFn" [ngStyle]="{'background-color': colorversionreview}"  [(ngModel)]="colorversionreview" 
 			class = "reviewer_dropdown_version"  >
 
 			  <option value="#F2F2F2" class = "whiteoption" [selected] = "true"> Reviewer </option>
 			  <option value="#BDBDBD" class = "grayoption" > John </option>
 			  <option value="#BDBDBD" class = "grayoption"> Rutvik </option>
-	  </select>
+	  </select> -->
+	  <input class = "reviewer_dropdown_version"  id = "reviewer_d" (keyup)="onKey($event)" placeholder= "Reviewer" >
 	  	<button class = "export_button_version_add" (click) = "addnewversion()"> Add New Version </button>
 
-	  	<mat-checkbox class = "readyexports">Ready for Export?</mat-checkbox>
+	  	<mat-checkbox class = "readyexports" [checked]= "readytoexport" >Ready for Export?</mat-checkbox>
 
 
 		<!-- <p class = "feature_paragraph">

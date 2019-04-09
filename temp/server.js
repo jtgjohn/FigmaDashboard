@@ -241,24 +241,27 @@ function postComment(versionId, userEmail, comment) {
     });
 }
 
-function postVersionInfo(info, fid, imagePath, frameChanged) {
+function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoExport) {
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
         var date = new Date();
         var doc = {
-            posterEmail: info.email,
+            poster: info.poster,
             status: info.status,
-            reviewerEmail: info.reviewerEmail,
+            reviewer: info.reviewer,
             imagePath: imagePath,
             fid: fid,
             frameChanged: frameChanged,
-            timestamp: date
+            timestamp: date,
+            whatisnewinfo: whatisnew,
+            export: readytoExport
         };
 
         dbo.collection("versions").insertOne(doc, function(err, result) {
             if (err) throw err;
+            console.log(result);
             db.close();
         });
     });
@@ -373,6 +376,43 @@ app.post("/projectsbyid", async function (req, res){
         console.log(result2);
 
         res.send(JSON.stringify(result2));
+
+    });
+});
+
+
+app.post("/addversion", async function (req, res){
+    req.on('data', async (chunk) => {
+          // postVersionInfo(info, fid, imagePath, frameChanged)
+
+          var user = await getUserAuth();
+          console.log("USER");
+          console.log(user);
+          var user_handle = user["handle"];
+          var reviewer = JSON.parse(chunk)["reviewer"];
+          var status = JSON.parse(chunk)["status"];
+          var fid = JSON.parse(chunk)["fid"];
+          var imagePath = JSON.parse(chunk)["imagePath"];
+          var whatisnew = JSON.parse(chunk)["whatisnew"];
+          var readytoExport = JSON.parse(chunk)["readytoexport"];
+          var frameChanged = "";
+          var info_dict = {
+              "poster":user,
+              "status": status,
+              "reviewer": reviewer
+          };
+
+          console.log(info_dict);
+          console.log(imagePath);
+          console.log(whatisnew);
+          console.log(readytoExport);
+          console.log(user_handle);
+          console.log(reviewer);
+          console.log(status);
+          console.log(fid);
+
+
+          postVersionInfo(info_dict, fid, imagePath, frameChanged, whatisnew, readytoExport);
 
     });
 });
