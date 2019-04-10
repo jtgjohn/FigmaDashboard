@@ -265,7 +265,7 @@ function postVersionInfo(info, fid, imagePath, frameChanged) {
 }
 
 async function getUserTeams(uEmail) {
-
+    //TODO: Error handling
     /*
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
@@ -286,19 +286,27 @@ async function getUserTeams(uEmail) {
         });
     });
     */
-    let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
-
-    var dbo = db.db("figmaDB");
-
     try {
-    const res = await dbo.collection("users").findOne({userEmail: uEmail});
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
 
-    //console.log(`res => ${JSON.stringify(res)}`);
-    //console.log(res);
-    return res;
+        var dbo = db.db("figmaDB");
+
+        try {
+            const res = await dbo.collection("users").findOne({userEmail: uEmail});
+
+            //console.log(`res => ${JSON.stringify(res)}`);
+            //console.log(res);
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
+            db.close();
+        }
     }
-    finally {
-        db.close();
+    catch (err) {
+        return err + "Error DB connection failed";
     }
 }
 
@@ -306,20 +314,13 @@ app.get("/getTeams", async function (req, res) {
     console.log("It t'was called");
     let userInfo = await getUserAuth().catch(error => console.log(error));
     let email = userInfo["email"];
-    //console.log(email);
     let result = await getUserTeams(email);
-    //console.log(result);
-    
-    //console.log(req);
-    //console.log(req["query"]["code"]);
-    //result = await OAuthGetToken(req["query"]["code"]).catch(error => console.log(error));
-    //console.log(result);
-    //AccessToken = result["access_token"];
-    //res.sendFile(path.join(__dirname, "/contents.html"));
+
     res.send(result["teamIDs"]);
 });
 
-function postAddUserTeams(uEmail, team, callback) {
+async function postAddUserTeams(uEmail, team) {
+    /*
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
@@ -329,23 +330,72 @@ function postAddUserTeams(uEmail, team, callback) {
             db.close();
         });
     });
-}
+    */
 
-function postRemoveUserTeams(uEmail, team, callback) {
-    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
-        if (err) throw err;
+    try {
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
+
         var dbo = db.db("figmaDB");
 
-        let uTeams = []
-        uTeams = getUserTeams(uEmail);
-        uTeams.splice(uTeams.indexOf(team), 1);
+        try {
+            const res = await dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teamIDs: team}});
 
-        dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: uTeam}}, function(err, result) {
-            if (err) throw err;
+            //console.log(`res => ${JSON.stringify(res)}`);
+            //console.log(res);
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
             db.close();
-        });
-    });
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
+    
 }
+
+app.post("/postTeam", async function (req, res) {
+    //console.log("It t'was called");
+    let userInfo = await getUserAuth().catch(error => console.log(error));
+    let email = userInfo["email"];
+    let result = await postAddUserTeams(email, req["query"]["team"]);
+
+    res.send(result);
+});
+
+async function postRemoveUserTeams(uEmail, team, callback) {
+    try {
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
+
+        var dbo = db.db("figmaDB");
+
+        try {
+            const res = await dbo.collection("users").updateOne({userEmail: uEmail}, {$pull: {teamIDs: team}});
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
+            db.close();
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
+}
+
+app.post("/postRemoveTeam", async function (req, res) {
+    //console.log("It t'was called");
+    let userInfo = await getUserAuth().catch(error => console.log(error));
+    let email = userInfo["email"];
+    let result = await postRemoveUserTeams(email, req["query"]["team"]);
+
+    res.send(result);
+});
 
 app.use(function (req, res, next) {
 
