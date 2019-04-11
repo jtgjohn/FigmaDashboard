@@ -520,7 +520,11 @@ app.get("/versionInfo", function (req, res) {
 });
 
 app.get("/getVersions", function(req, res) {
-    getVersions(req.fid, function(err, result) {
+
+    console.log("REQ");
+    console.log(req.query.fid);
+    
+    getVersions(req.query.fid, function(err, result) {
         if (err) throw err;
         else res.send(result);
     });

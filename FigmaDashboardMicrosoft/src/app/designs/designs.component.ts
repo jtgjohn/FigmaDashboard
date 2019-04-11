@@ -18,7 +18,8 @@ export interface Design{
   title:string,
   thumbnail_url: string,
   last_modified: string,
-  id: string
+  id: number
+  status: string
 };
 
 
@@ -31,6 +32,7 @@ export class DesignsComponent implements OnInit {
 	color = "";	
 	color1 = "";
 	colorversion = "";
+	allcolors = [];
 	colorversionreview = "";
 	changeworthy:boolean = false;
 	panelvisible:boolean = false;
@@ -77,6 +79,26 @@ export class DesignsComponent implements OnInit {
       headers: headers
     });
   }
+
+  getVersions(){
+  	 var datax; 
+    const headers = new HttpHeaders({
+       
+        'Content-Type': 'application/json'
+    });
+
+    var url = "http://127.0.0.1:8080/getVersions";
+    let paramsh = new HttpParams().set('fid', this.id);
+
+    
+
+    // console.log("DATA: " + data);
+    // console.log("HEADERS: " + headers);
+    //make a cross origin POST request for user timeline info.
+    return this.http.get(url, {
+      params: paramsh
+    });
+  }
   ngOnInit() {
 
 
@@ -104,9 +126,10 @@ export class DesignsComponent implements OnInit {
 
     });
 
-
+var counter = 0;
   	 this.getFileImages().subscribe((res:any) => {
          console.log(res);
+         
          for (let key in res["images"]) {
    
          	var proj = {} as Design;
@@ -114,9 +137,36 @@ export class DesignsComponent implements OnInit {
          	proj.thumbnail_url = res["images"][key];
          	proj.last_modified = res["lastModified"];
          	this.latest_thumbnail_url = proj.thumbnail_url;
-         	proj.id = "";
+         	proj.status = "Pending Approval";
+         	proj.id = counter;
+         	this.allcolors.push("#F2C94C");
          	this.designs.push(proj);
+
+         	counter++;
          }
+
+
+         // console.log(this.features);
+      }, (err) => {
+        console.log(err);
+      });
+
+
+  	 this.getVersions().subscribe((res:any) => {
+         console.log(res);
+         for(var i = 0; i < res.length; ++i){
+         	var proj = {} as Design;
+         	proj.title = res[i]["whatisnewinfo"];
+         	proj.thumbnail_url = res[i]["imagePath"];
+         	proj.last_modified = res[i]["timestamp"];
+         	this.latest_thumbnail_url = proj.thumbnail_url;
+         	proj.status = "Pending Approval";
+         	proj.id = counter;
+         	this.allcolors.push("#F2C94C");
+         	this.designs.push(proj);
+         	counter++;
+         }
+         
 
 
          // console.log(this.features);
