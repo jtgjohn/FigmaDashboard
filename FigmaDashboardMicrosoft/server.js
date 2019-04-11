@@ -9,7 +9,7 @@ const mongo = require('mongodb').MongoClient;
 const mongo_url = process.env.MONGO_URL;
 
 
-app.options('*', cors()); 
+app.options('*', cors());
 
 AccessToken = "";
 callback = "http://localhost:8080/contents.html";
@@ -22,8 +22,8 @@ async function OAuthGetToken(code){
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "client_id": process.env.clientID,
-            "client_secret": process.env.clientSec,
+            "client_id": process.env.clientIDoriginal,
+            "client_secret": process.env.clientSecretoriginal,
             "redirect_uri": callback2,
             "code": code,
             "grant_type": "authorization_code"
@@ -351,7 +351,7 @@ app.post("/projectsbyid", async function (req, res){
         // AccessToken = result["access_token"];
         let result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
 
-        
+
         for(var i = 0; i < result2["files"].length; ++i){
             console.log("Hello");
             let result3 = await getFileAuth(result2["files"][i]["key"]).catch(error => console.log(error));
@@ -421,7 +421,7 @@ app.post("/teamProjectsall", async function (req, res) {
 
 
     });
-    
+
 });
 
 
@@ -429,7 +429,7 @@ app.post("/teamProjectsall", async function (req, res) {
 //team projects
 app.get("/teamProjects", async function (req, res) {
     let result = await getTeamProjects(teamID).catch(error => console.log(error));
-    
+
     res.send(JSON.stringify(result));
 });
 
@@ -437,7 +437,7 @@ app.get("/teamProjects", async function (req, res) {
 app.get("/projectFiles", async function (req, res) {
     let projects = await getTeamProjects(teamID).catch(error => console.log(error));
     let result = await getProjectFiles(projects["projects"][0]["id"]).catch(error => console.log(error));
-    
+
     res.send(JSON.stringify(result));
 });
 
@@ -446,7 +446,7 @@ app.get("/file", async function (req, res) {
     let projects = await getTeamProjects(teamID).catch(error => console.log(error));
     let files = await getProjectFiles(projects["projects"][0]["id"]).catch(error => console.log(error));
     let result = await getFile(files["files"][0]["key"]).catch(error => console.log(error));
-    
+
     let ret = "<html>";
     ret += "<body>";
     ret += "<p>Name: " + result["name"] + "</p>";
@@ -459,7 +459,7 @@ app.get("/file", async function (req, res) {
 
     console.log(result["thumbnailUrl"]);
     res.send(ret);
-    
+
 });
 
 function findID(mapItem, id) {
@@ -468,7 +468,7 @@ function findID(mapItem, id) {
     //if (mapItem["children"].length == 0) {
     if (!("children" in mapItem)) {
         return ret;
-    } 
+    }
     if (mapItem["children"] == undefined) {
         return ret;
     }
@@ -479,14 +479,14 @@ function findID(mapItem, id) {
             //console.log("Found it");
             break;
         }
-        
+
         let temp = findID(mapItem["children"][i], id)
         if (temp != "") {
             //console.log("Ret was found, it's " + temp);
             ret = temp;
             break;
         }
-        
+
     }
     return ret;
 }
@@ -515,7 +515,7 @@ app.post("/fileImagebyFeature", async function (req, res) {
 
 
     });
-    
+
 });
 
 //FileImages
@@ -558,7 +558,7 @@ app.get("/fileImage", async function (req, res) {
     result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
     //console.log(result);
 
-    
+
     let ret = "<html>";
     ret += "<body>";
     for (var img in result["images"]) {
@@ -566,10 +566,10 @@ app.get("/fileImage", async function (req, res) {
     }
     ret += "</body>";
     ret += "</html>";
-    
+
     res.send(ret);
-    
-    
+
+
 });
 
 //return all other files when requested using the given path

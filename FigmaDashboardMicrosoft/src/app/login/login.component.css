@@ -18,6 +18,10 @@
 	color: rgba(0, 120, 215, 0.7);
 }
 
+.mat-microsoftbutton {
+	background-color: #00FFFF
+
+}
 
 .login_screen_container{
 	position: absolute;
@@ -30,7 +34,7 @@
 
 }
 
-input{box-sizing:border-box} 
+input{box-sizing:border-box}
 
 
 
@@ -80,4 +84,3 @@ text-align: center;
 
 color: #000000;
 }
-
