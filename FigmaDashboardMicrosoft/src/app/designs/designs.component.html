@@ -36,7 +36,7 @@
 
 <div class = "export_button_panel">
 	
-	<button class = "export_button" (click) = "addnewversion()" *ngIf = "panelvisible == false"> Add New Version </button>
+	<button class = "export_button" (click) = "addnewversion()"> Add New Version </button>
 
 
 	<div class = "gear_parent">
@@ -125,15 +125,26 @@
 			{{pr.title}}
 		</label>
 
-		<!-- <p class = "feature_paragraph">
+		<p class = "feature_paragraph">
 			Last Modified: {{pr.last_modified}}
 
 
 		</p>
- -->
+
+		<button class = "comments_options">
+		  View Comments Pane
+		</button>
+
+ 		<select [compareWith]="compareFn" [ngStyle]="{'background-color': allcolors[pr.id]}"  [(ngModel)]="allcolors[pr.id]" 
+			class = "approval_dropdown" id = "1sel" >
+
+			  <option value="#F2C94C" class = "yellowoption" [selected] = "true"> Pending Approval</option>
+			  <option value="#6FCF97" class = "greenoption" >Approved</option>
+			  <option value="#EB5757" class = "redoption"> Changes Requested </option>
+			</select>
 
 		<div class = "project_image">
-			<img src = "{{pr.thumbnail_url}}"/>
+			<img src = "{{pr.thumbnail_url}}" />
 
 		</div> 
 

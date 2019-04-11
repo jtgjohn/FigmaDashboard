@@ -8,7 +8,7 @@
 	position: absolute;
 	width: 800px;
 	height: 113px;
-	left: 181px;
+	left: 450px;
 	top: 53px;
 
 	font-family: 'segoeui';
@@ -18,19 +18,22 @@
 	color: rgba(0, 120, 215, 0.7);
 }
 
+.mat-microsoftbutton {
+background-color: rgba(0, 120, 215, 0.7);
+}
 
 .login_screen_container{
 	position: absolute;
 	width: 300px;
 	height: 265px;
-	left: 362px;
+	left: 630px;
 	top: 184px;
 
 	background: rgba(0, 120, 215, 0.7);
 
 }
 
-input{box-sizing:border-box} 
+input{box-sizing:border-box}
 
 
 
@@ -68,11 +71,20 @@ color: #000000;
 
 }
 
+.front_page_icon{
+	width: 400px;
+	height: 400px;
+	left: 600px;
+	top: 150px;
+	position: relative;
+}
+
 .login_button{
 	position: relative;
 	width: 120px;
+	top: 100px;
+	left: 750px;
 height: 32px;
-left: 90px;
 font-family: 'segoeui';
 font-size: 14px;
 line-height: 20px;
@@ -80,4 +92,3 @@ text-align: center;
 
 color: #000000;
 }
-
