@@ -94,7 +94,7 @@
 			  <option value="#BDBDBD" class = "grayoption" > John </option>
 			  <option value="#BDBDBD" class = "grayoption"> Rutvik </option>
 	  </select> -->
-	  <input class = "reviewer_dropdown_version"  id = "reviewer_d" (keyup)="onKey($event)" placeholder= "Reviewer" >
+	  <input class = "reviewer_dropdown_version"  id = "reviewer_d" placeholder= "Reviewer" >
 	  	<button class = "export_button_version_add" (click) = "addnewversion()"> Add New Version </button>
 
 	  	<mat-checkbox class = "readyexports" [checked]= "readytoexport" >Ready for Export?</mat-checkbox>
@@ -131,12 +131,26 @@
 
 		</p>
 
-		<button class = "comments_options">
+		<button class = "comments_options" (click) = "togglecomments()">
 		  View Comments Pane
 		</button>
 
- 		<select [compareWith]="compareFn" [ngStyle]="{'background-color': allcolors[pr.id]}"  [(ngModel)]="allcolors[pr.id]" 
-			class = "approval_dropdown" id = "1sel" >
+
+		<br/>
+		<br/>
+		<br/>
+		<div class = "toggle_panel" *ngIf = "commentson == true">
+		<p class = "comments_panel" *ngFor = "let comment of comments[pr.id]" > {{comment}} </p>
+		</div>
+
+		<input class = "comment_enter"  id = "comment_place"  placeholder= "Enter Comment" >
+
+		<button id = "add_comment" (click) = "addcomment(pr.version_id)">
+		  Add Comment
+		</button>
+
+ 		<select [compareWith]="compareFn" [ngStyle]="{'background-color': allcolors[pr.id]}"  [(ngModel)]="allcolors[pr.id]"   
+			class = "approval_dropdown" id = "1sel" (change)="onChange(pr.version_id, $event.target.value)">
 
 			  <option value="#F2C94C" class = "yellowoption" [selected] = "true"> Pending Approval</option>
 			  <option value="#6FCF97" class = "greenoption" >Approved</option>
