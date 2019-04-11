@@ -8,10 +8,10 @@ require('dotenv').config();
 const mongo = require('mongodb').MongoClient;
 const mongo_url = process.env.MONGO_URL;
 
-const teamID = "681911804688300104";
+const teamID = '';
 const featureName = "Export Feature Dropdown";
 
-app.options('*', cors()); 
+app.options('*', cors());
 
 AccessToken = "";
 callback = "http://localhost:8080/contents.html";
@@ -363,7 +363,7 @@ app.post("/projectsbyid", async function (req, res){
         // AccessToken = result["access_token"];
         let result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
 
-        
+
         for(var i = 0; i < result2["files"].length; ++i){
             console.log("Hello");
             let result3 = await getFileAuth(result2["files"][i]["key"]).catch(error => console.log(error));
@@ -423,6 +423,7 @@ app.post("/teamProjectsall", async function (req, res) {
     req.on('data', async (chunk) => {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
+        teamID = JSON.parse(chunk[teamID_req])
         if(AccessToken == ""){
             let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             console.log(result);
@@ -470,7 +471,7 @@ app.post("/teamProjectsall", async function (req, res) {
 
 
     });
-    
+
 });
 
 
@@ -478,7 +479,7 @@ app.post("/teamProjectsall", async function (req, res) {
 //team projects
 app.get("/teamProjects", async function (req, res) {
     let result = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
-    
+
     res.send(JSON.stringify(result));
 });
 
@@ -486,7 +487,7 @@ app.get("/teamProjects", async function (req, res) {
 app.get("/projectFiles", async function (req, res) {
     let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
     let result = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
-    
+
     res.send(JSON.stringify(result));
 });
 
@@ -495,7 +496,7 @@ app.get("/file", async function (req, res) {
     let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
     let files = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
     let result = await getFileAuth(files["files"][0]["key"]).catch(error => console.log(error));
-    
+
     let ret = "<html>";
     ret += "<body>";
     ret += "<p>Name: " + result["name"] + "</p>";
@@ -508,7 +509,7 @@ app.get("/file", async function (req, res) {
 
     console.log(result["thumbnailUrl"]);
     res.send(ret);
-    
+
 });
 
 
@@ -533,7 +534,7 @@ function findID(mapItem, id) {
     //if (mapItem["children"].length == 0) {
     if (!("children" in mapItem)) {
         return ret;
-    } 
+    }
     if (mapItem["children"] == undefined) {
         return ret;
     }
@@ -544,14 +545,14 @@ function findID(mapItem, id) {
             //console.log("Found it");
             break;
         }
-        
+
         let temp = findID(mapItem["children"][i], id)
         if (temp != "") {
             //console.log("Ret was found, it's " + temp);
             ret = temp;
             break;
         }
-        
+
     }
     return ret;
 }
@@ -580,7 +581,7 @@ app.post("/fileImagebyFeature", async function (req, res) {
 
 
     });
-    
+
 });
 
 //FileImages
@@ -623,7 +624,7 @@ app.get("/fileImage", async function (req, res) {
     let result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
     //console.log(result);
 
-    
+
     let ret = "<html>";
     ret += "<body>";
     for (var img in result["images"]) {
@@ -631,10 +632,10 @@ app.get("/fileImage", async function (req, res) {
     }
     ret += "</body>";
     ret += "</html>";
-    
+
     res.send(ret);
-    
-    
+
+
 });
 
 //return all other files when requested using the given path

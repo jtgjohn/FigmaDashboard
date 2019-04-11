@@ -27,11 +27,28 @@ export class HomeComponent implements OnInit {
   constructor(private activatedRoute: ActivatedRoute, private http: HttpClient,
   	  private router: Router) { }
 
+  view_id_view(teamid: string){
+		var datax;
+		var teamid = document.getElementById("teamident");
+	 const headers = new HttpHeaders({
 
+			 'Content-Type': 'application/json'
+	 });
+
+	 // console.log("DATA: " + data);
+	 // console.log("HEADERS: " + headers);
+	 //make a cross origin POST request for user timeline info.
+	 return this.http.post('http://127.0.0.1:8080/teamProjectsall', JSON.stringify({"teamid": teamid}), {
+		 headers: headers
+	 });
+
+
+	}
   getProjects(code: string){
      var datax;
+		 var teamid;
     const headers = new HttpHeaders({
-       
+
         'Content-Type': 'application/json'
     });
 
@@ -53,7 +70,7 @@ export class HomeComponent implements OnInit {
 
 
     this.getProjects(this.code)
-    
+
       .subscribe((res:any) => {
          console.log(res);
          for(var i = 0; i < res.length; ++i){
@@ -64,11 +81,11 @@ export class HomeComponent implements OnInit {
          	proj.id = res[i]["id"];
          	this.projects.push(proj);
          }
-       
+
       }, (err) => {
         console.log(err);
       });
-	
+
 
 
   }
