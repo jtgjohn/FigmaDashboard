@@ -188,7 +188,7 @@ function getVersions(featureId, callback) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        dbo.collection("versions").find({fid: featureId}).sort({date: 1}).toArray(function(err, result) {
+        dbo.collection("versions").find({fid: featureId}).sort({date: -1}).toArray(function(err, result) {
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
@@ -201,7 +201,7 @@ function getMostRecentVersionImage(featureId, callback) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        dbo.collection("versions").find({fid: featureId}).sort({date: 1}).limit(1).toArray(function(err, result) {
+        dbo.collection("versions").find({fid: featureId}).sort({date: -1}).limit(1).toArray(function(err, result) {
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
