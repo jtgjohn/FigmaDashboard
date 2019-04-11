@@ -24,9 +24,9 @@ async function OAuthGetToken(code){
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            "client_id": process.env.clientID,
-            "client_secret": process.env.clientSec,
-            "redirect_uri": callback2,
+            "client_id": process.env.clientIDoriginal,
+            "client_secret": process.env.clientSecretoriginal,
+            "redirect_uri": callback,
             "code": code,
             "grant_type": "authorization_code"
         })
@@ -48,7 +48,7 @@ async function getUserAuth(){
     })
 
     let ret = await result.json();
-    console.log("USER AUTH RET: %j",ret);
+    //console.log("USER AUTH RET: %j",ret);
     return ret;
 }
 
@@ -241,46 +241,86 @@ function postComment(versionId, userEmail, comment) {
     });
 }
 
-function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoExport) {
+function postVersionInfo(info, fid, imagePath, frameChanged) {
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
         var date = new Date();
         var doc = {
-            poster: info.poster,
+            posterEmail: info.email,
             status: info.status,
-            reviewer: info.reviewer,
+            reviewerEmail: info.reviewerEmail,
             imagePath: imagePath,
             fid: fid,
             frameChanged: frameChanged,
-            timestamp: date,
-            whatisnewinfo: whatisnew,
-            export: readytoExport
+            timestamp: date
         };
 
         dbo.collection("versions").insertOne(doc, function(err, result) {
             if (err) throw err;
-            console.log(result);
             db.close();
         });
     });
 }
 
-function getUserTeams(uEmail, callback) {
+async function getUserTeams(uEmail) {
+    //TODO: Error handling
+    /*
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
         dbo.collection("users").findOne({userEmail: uEmail}, function(err, result) {
-            if (err) callback(err, null);
-            else callback(null, result);
-            db.close();
+            
+            //if (err) callback(err, null);
+            //else callback(null, result);
+            //db.close();
+            
+           console.log("Made db call");
+           console.log(err);
+           console.log(result);
+           if (err) return 400;
+           else return result;
+           db.close();
         });
     });
+    */
+    try {
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
+
+        var dbo = db.db("figmaDB");
+
+        try {
+            const res = await dbo.collection("users").findOne({userEmail: uEmail});
+
+            //console.log(`res => ${JSON.stringify(res)}`);
+            //console.log(res);
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
+            db.close();
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
 }
 
-function postAddUserTeams(uEmail, team, callback) {
+app.get("/getTeams", async function (req, res) {
+    console.log("It t'was called");
+    let userInfo = await getUserAuth().catch(error => console.log(error));
+    let email = userInfo["email"];
+    let result = await getUserTeams(email);
+
+    res.send(result["teamIDs"]);
+});
+
+async function postAddUserTeams(uEmail, team) {
+    /*
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
@@ -290,23 +330,72 @@ function postAddUserTeams(uEmail, team, callback) {
             db.close();
         });
     });
-}
+    */
 
-function postRemoveUserTeams(uEmail, team, callback) {
-    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
-        if (err) throw err;
+    try {
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
+
         var dbo = db.db("figmaDB");
 
-        let uTeams = []
-        uTeams = getUserTeams(uEmail);
-        uTeams.splice(uTeams.indexOf(team), 1);
+        try {
+            const res = await dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teamIDs: team}});
 
-        dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: uTeam}}, function(err, result) {
-            if (err) throw err;
+            //console.log(`res => ${JSON.stringify(res)}`);
+            //console.log(res);
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
             db.close();
-        });
-    });
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
+    
 }
+
+app.post("/postTeam", async function (req, res) {
+    //console.log("It t'was called");
+    let userInfo = await getUserAuth().catch(error => console.log(error));
+    let email = userInfo["email"];
+    let result = await postAddUserTeams(email, req["query"]["team"]);
+
+    res.send(result);
+});
+
+async function postRemoveUserTeams(uEmail, team, callback) {
+    try {
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
+
+        var dbo = db.db("figmaDB");
+
+        try {
+            const res = await dbo.collection("users").updateOne({userEmail: uEmail}, {$pull: {teamIDs: team}});
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
+            db.close();
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
+}
+
+app.post("/postRemoveTeam", async function (req, res) {
+    //console.log("It t'was called");
+    let userInfo = await getUserAuth().catch(error => console.log(error));
+    let email = userInfo["email"];
+    let result = await postRemoveUserTeams(email, req["query"]["team"]);
+
+    res.send(result);
+});
 
 app.use(function (req, res, next) {
 
@@ -358,7 +447,7 @@ app.get("/user", async function (req, res) {
 app.post("/projectsbyid", async function (req, res){
     req.on('data', async (chunk) => {
         console.log("BY ID PROJECTS");
-        // let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        // let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
         // console.log(result);
         // AccessToken = result["access_token"];
         let result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
@@ -381,50 +470,13 @@ app.post("/projectsbyid", async function (req, res){
 });
 
 
-app.post("/addversion", async function (req, res){
-    req.on('data', async (chunk) => {
-          // postVersionInfo(info, fid, imagePath, frameChanged)
-
-          var user = await getUserAuth();
-          console.log("USER");
-          console.log(user);
-          var user_handle = user["handle"];
-          var reviewer = JSON.parse(chunk)["reviewer"];
-          var status = JSON.parse(chunk)["status"];
-          var fid = JSON.parse(chunk)["fid"];
-          var imagePath = JSON.parse(chunk)["imagePath"];
-          var whatisnew = JSON.parse(chunk)["whatisnew"];
-          var readytoExport = JSON.parse(chunk)["readytoexport"];
-          var frameChanged = "";
-          var info_dict = {
-              "poster":user,
-              "status": status,
-              "reviewer": reviewer
-          };
-
-          console.log(info_dict);
-          console.log(imagePath);
-          console.log(whatisnew);
-          console.log(readytoExport);
-          console.log(user_handle);
-          console.log(reviewer);
-          console.log(status);
-          console.log(fid);
-
-
-          postVersionInfo(info_dict, fid, imagePath, frameChanged, whatisnew, readytoExport);
-
-    });
-});
-
-
 //team projects
 app.post("/teamProjectsall", async function (req, res) {
     req.on('data', async (chunk) => {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
         if(AccessToken == ""){
-            let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+            let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             console.log(result);
             AccessToken = result["access_token"];
             console.log(AccessToken);
@@ -506,7 +558,7 @@ app.get("/file", async function (req, res) {
     ret += "</html>";
 
 
-    console.log(result["thumbnailUrl"]);
+    //console.log(result["thumbnailUrl"]);
     res.send(ret);
     
 });
@@ -562,7 +614,7 @@ app.post("/fileImagebyFeature", async function (req, res) {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
         if(AccessToken == ""){
-            let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+            let result = await OAuthGetToken2(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             console.log(result);
             AccessToken = result["access_token"];
             console.log(AccessToken);

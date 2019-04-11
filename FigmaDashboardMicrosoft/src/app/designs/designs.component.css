@@ -36,8 +36,8 @@
 }
 
 .arrowiconfeature{
-	position:absolute;
-	left: 178px;
+	position:relative;
+	right: 290px;
 }
 
 .export_button_panel{
@@ -178,6 +178,11 @@ font-family: 'segoeui', 'Open Sans';
 }
 
 
+.additional_thumbnail{
+	width: 200px;
+	height: 200px;
+}
+
 .feature_button{
 	font-family: 'segoeui',  'Open Sans';
 	position: relative;
@@ -191,6 +196,14 @@ font-family: 'segoeui', 'Open Sans';
 
 
 #featuretitle{
+	position: relative;
+	left: 150px;
+	bottom: 1px;
+	font-weight: bold;
+	display: inline;
+}
+
+#projecttitle{
 	font-weight: bold;
 	display: inline;
 }

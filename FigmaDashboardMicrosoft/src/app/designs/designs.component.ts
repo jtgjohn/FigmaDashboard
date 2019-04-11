@@ -41,6 +41,8 @@ export class DesignsComponent implements OnInit {
   	state:string = "";
   	project_name:string = "";
   	feature_name:string = ""; 
+  	readytoexport:boolean  = true;
+  	latest_thumbnail_url = "";
 
 	  designs:Design[] = [];
 
@@ -98,6 +100,7 @@ export class DesignsComponent implements OnInit {
         this.project_name = params["project_name"];
         this.feature_name = params["feature_name"];
           	document.getElementById("featuretitle").innerHTML = this.feature_name;
+          	document.getElementById("projecttitle").innerHTML = this.project_name;
 
     });
 
@@ -110,6 +113,7 @@ export class DesignsComponent implements OnInit {
          	proj.title = res["lastModified"];
          	proj.thumbnail_url = res["images"][key];
          	proj.last_modified = res["lastModified"];
+         	this.latest_thumbnail_url = proj.thumbnail_url;
          	proj.id = "";
          	this.designs.push(proj);
          }
@@ -130,8 +134,55 @@ export class DesignsComponent implements OnInit {
   	this.changeworthy = !this.changeworthy;
   }
 
+
+
+  addnewversioncall(status){
+  	  var datax;
+    const headers = new HttpHeaders({
+       
+        'Content-Type': 'application/json'
+    });
+
+    var reviewer = (<HTMLInputElement>document.getElementById("reviewer_d")).value;
+    var whatisnew = (<HTMLInputElement>document.getElementById("wnew")).value;
+    // console.log("DATA: " + data);
+    // console.log("HEADERS: " + headers);
+    //make a cross origin POST request for user timeline info.
+    return this.http.post('http://127.0.0.1:8080/addversion', JSON.stringify({"reviewer": reviewer,"status": status, 
+    	"fid": this.id,
+    	"imagePath": this.latest_thumbnail_url, "whatisnew": whatisnew, "readytoexport": this.readytoexport}), {
+      headers: headers
+    });
+  }
   addnewversion(){
   	this.panelvisible = !this.panelvisible;
+  	 var status = "";
+
+    if(this.colorversion === "#F2C94C"){
+		status = "Request Approval";
+	}else if(this.colorversion === "#BDBDBD"){
+		status = "Draft";
+	}
+	else{
+		return;
+	}
+  	this.addnewversioncall(status).subscribe((res:any) => {
+         // console.log(res);
+         // for (let key in res["images"]) {
+   
+         // 	var proj = {} as Design;
+         // 	proj.title = res["lastModified"];
+         // 	proj.thumbnail_url = res["images"][key];
+         // 	proj.last_modified = res["lastModified"];
+         // 	proj.id = "";
+         // 	this.designs.push(proj);
+         // }
+
+
+         // console.log(this.features);
+      }, (err) => {
+        console.log(err);
+      });
   }
  //  onChange(newValue) {
 	// console.log(newValue);
