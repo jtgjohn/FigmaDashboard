@@ -19,8 +19,7 @@
 }
 
 .mat-microsoftbutton {
-	background-color: #00FFFF
-
+background-color: rgba(0, 120, 215, 0.7);
 }
 
 .login_screen_container{
@@ -72,11 +71,20 @@ color: #000000;
 
 }
 
+.front_page_icon{
+	width: 400px;
+	height: 400px;
+	left: 600px;
+	top: 150px;
+	position: relative;
+}
+
 .login_button{
 	position: relative;
 	width: 120px;
+	top: 100px;
+	left: 750px;
 height: 32px;
-left: 90px;
 font-family: 'segoeui';
 font-size: 14px;
 line-height: 20px;
