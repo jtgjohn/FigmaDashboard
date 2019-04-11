@@ -28,6 +28,20 @@ color: rgba(0, 0, 0, 0.6);
 
 
 }
+.auth_field_one{
+position:absolute;
+width: 75px;
+height: 32px;
+left: 800px;
+font-family: 'segoeui';
+font-size: 14px;
+line-height: 20px;
+
+color: rgba(0, 0, 0, 0.6);
+
+
+
+}
 .navbarheading{
 	position: absolute;
 	width: 193px;
