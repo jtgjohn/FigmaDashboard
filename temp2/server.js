@@ -8,8 +8,10 @@ require('dotenv').config();
 const mongo = require('mongodb').MongoClient;
 const mongo_url = process.env.MONGO_URL;
 
+const teamID = "681911804688300104";
+const featureName = "Export Feature Dropdown";
 
-app.options('*', cors());
+app.options('*', cors()); 
 
 AccessToken = "";
 callback = "http://localhost:8080/contents.html";
@@ -24,7 +26,7 @@ async function OAuthGetToken(code){
         body: JSON.stringify({
             "client_id": process.env.clientIDoriginal,
             "client_secret": process.env.clientSecretoriginal,
-            "redirect_uri": callback2,
+            "redirect_uri": callback,
             "code": code,
             "grant_type": "authorization_code"
         })
@@ -46,7 +48,7 @@ async function getUserAuth(){
     })
 
     let ret = await result.json();
-    console.log("USER AUTH RET: %j",ret);
+    //console.log("USER AUTH RET: %j",ret);
     return ret;
 }
 
@@ -262,20 +264,63 @@ function postVersionInfo(info, fid, imagePath, frameChanged) {
     });
 }
 
-function getUserTeams(uEmail, callback) {
+async function getUserTeams(uEmail) {
+    //TODO: Error handling
+    /*
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
         dbo.collection("users").findOne({userEmail: uEmail}, function(err, result) {
-            if (err) callback(err, null);
-            else callback(null, result);
-            db.close();
+            
+            //if (err) callback(err, null);
+            //else callback(null, result);
+            //db.close();
+            
+           console.log("Made db call");
+           console.log(err);
+           console.log(result);
+           if (err) return 400;
+           else return result;
+           db.close();
         });
     });
+    */
+    try {
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
+
+        var dbo = db.db("figmaDB");
+
+        try {
+            const res = await dbo.collection("users").findOne({userEmail: uEmail});
+
+            //console.log(`res => ${JSON.stringify(res)}`);
+            //console.log(res);
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
+            db.close();
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
 }
 
-function postAddUserTeams(uEmail, team, callback) {
+app.get("/getTeams", async function (req, res) {
+    console.log("It t'was called");
+    let userInfo = await getUserAuth().catch(error => console.log(error));
+    let email = userInfo["email"];
+    let result = await getUserTeams(email);
+
+    res.send(result["teamIDs"]);
+});
+
+async function postAddUserTeams(uEmail, team) {
+    /*
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
@@ -285,23 +330,72 @@ function postAddUserTeams(uEmail, team, callback) {
             db.close();
         });
     });
-}
+    */
 
-function postRemoveUserTeams(uEmail, team, callback) {
-    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
-        if (err) throw err;
+    try {
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
+
         var dbo = db.db("figmaDB");
 
-        let uTeams = []
-        uTeams = getUserTeams(uEmail);
-        uTeams.splice(uTeams.indexOf(team), 1);
+        try {
+            const res = await dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teamIDs: team}});
 
-        dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: uTeam}}, function(err, result) {
-            if (err) throw err;
+            //console.log(`res => ${JSON.stringify(res)}`);
+            //console.log(res);
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
             db.close();
-        });
-    });
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
+    
 }
+
+app.post("/postTeam", async function (req, res) {
+    //console.log("It t'was called");
+    let userInfo = await getUserAuth().catch(error => console.log(error));
+    let email = userInfo["email"];
+    let result = await postAddUserTeams(email, req["query"]["team"]);
+
+    res.send(result);
+});
+
+async function postRemoveUserTeams(uEmail, team, callback) {
+    try {
+        let db = await mongo.connect(mongo_url, { useNewUrlParser: true });
+
+        var dbo = db.db("figmaDB");
+
+        try {
+            const res = await dbo.collection("users").updateOne({userEmail: uEmail}, {$pull: {teamIDs: team}});
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
+            db.close();
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
+}
+
+app.post("/postRemoveTeam", async function (req, res) {
+    //console.log("It t'was called");
+    let userInfo = await getUserAuth().catch(error => console.log(error));
+    let email = userInfo["email"];
+    let result = await postRemoveUserTeams(email, req["query"]["team"]);
+
+    res.send(result);
+});
 
 app.use(function (req, res, next) {
 
@@ -326,9 +420,18 @@ app.get("/", async function (req, res) {
     res.sendFile(path.join(__dirname, "/index.html"));
 });
 
+app.get("/contents.html", async function (req, res) {
+    //console.log(req);
+    //console.log(req["query"]["code"]);
+    result = await OAuthGetToken(req["query"]["code"]).catch(error => console.log(error));
+    //console.log(result);
+    AccessToken = result["access_token"];
+    res.sendFile(path.join(__dirname, "/contents.html"));
+});
+
 //user
 app.get("/user", async function (req, res) {
-    let result = await getUser().catch(error => console.log(error));
+    let result = await getUserAuth().catch(error => console.log(error));
     //console.log(JSON.stringify(result));
     let ret = "<html>";
     ret += "<body>";
@@ -341,8 +444,6 @@ app.get("/user", async function (req, res) {
     res.send(ret);
 });
 
-
-
 app.post("/projectsbyid", async function (req, res){
     req.on('data', async (chunk) => {
         console.log("BY ID PROJECTS");
@@ -351,7 +452,7 @@ app.post("/projectsbyid", async function (req, res){
         // AccessToken = result["access_token"];
         let result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
 
-
+        
         for(var i = 0; i < result2["files"].length; ++i){
             console.log("Hello");
             let result3 = await getFileAuth(result2["files"][i]["key"]).catch(error => console.log(error));
@@ -421,32 +522,32 @@ app.post("/teamProjectsall", async function (req, res) {
 
 
     });
-
+    
 });
 
 
 
 //team projects
 app.get("/teamProjects", async function (req, res) {
-    let result = await getTeamProjects(teamID).catch(error => console.log(error));
-
+    let result = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+    
     res.send(JSON.stringify(result));
 });
 
 //project files
 app.get("/projectFiles", async function (req, res) {
-    let projects = await getTeamProjects(teamID).catch(error => console.log(error));
-    let result = await getProjectFiles(projects["projects"][0]["id"]).catch(error => console.log(error));
-
+    let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+    let result = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
+    
     res.send(JSON.stringify(result));
 });
 
 //File
 app.get("/file", async function (req, res) {
-    let projects = await getTeamProjects(teamID).catch(error => console.log(error));
-    let files = await getProjectFiles(projects["projects"][0]["id"]).catch(error => console.log(error));
-    let result = await getFile(files["files"][0]["key"]).catch(error => console.log(error));
-
+    let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+    let files = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
+    let result = await getFileAuth(files["files"][0]["key"]).catch(error => console.log(error));
+    
     let ret = "<html>";
     ret += "<body>";
     ret += "<p>Name: " + result["name"] + "</p>";
@@ -457,10 +558,26 @@ app.get("/file", async function (req, res) {
     ret += "</html>";
 
 
-    console.log(result["thumbnailUrl"]);
+    //console.log(result["thumbnailUrl"]);
     res.send(ret);
-
+    
 });
+
+
+app.get("/versionInfo", function (req, res) {
+    getVersionInfo(req.vid, function(err, result) {
+        if (err) throw err;
+        else res.send(result);
+    });
+});
+
+app.get("/getVersions", function(req, res) {
+    getVersions(req.fid, function(err, result) {
+        if (err) throw err;
+        else res.send(result);
+    });
+})
+
 
 function findID(mapItem, id) {
     //console.log(mapItem);
@@ -468,7 +585,7 @@ function findID(mapItem, id) {
     //if (mapItem["children"].length == 0) {
     if (!("children" in mapItem)) {
         return ret;
-    }
+    } 
     if (mapItem["children"] == undefined) {
         return ret;
     }
@@ -479,14 +596,14 @@ function findID(mapItem, id) {
             //console.log("Found it");
             break;
         }
-
+        
         let temp = findID(mapItem["children"][i], id)
         if (temp != "") {
             //console.log("Ret was found, it's " + temp);
             ret = temp;
             break;
         }
-
+        
     }
     return ret;
 }
@@ -515,19 +632,19 @@ app.post("/fileImagebyFeature", async function (req, res) {
 
 
     });
-
+    
 });
 
 //FileImages
 app.get("/fileImage", async function (req, res) {
 
-    let projects = await getTeamProjects(teamID).catch(error => console.log(error));
-    let files = await getProjectFiles(projects["projects"][0]["id"]).catch(error => console.log(error));
-    let result = await getFileImages(files["files"][0]["key"], featureID).catch(error => console.log(error));
+    //let projects = await getTeamProjects(teamID).catch(error => console.log(error));
+    //let files = await getProjectFiles(projects["projects"][0]["id"]).catch(error => console.log(error));
+    //let result = await getFileImages(files["files"][0]["key"], featureID).catch(error => console.log(error));
 
-    projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+    let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
     //console.log(projects);
-    files = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
+    let files = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
     //console.log(files)
     let file = await getFileAuth(files["files"][0]["key"]).catch(error => console.log(error));
 
@@ -555,10 +672,10 @@ app.get("/fileImage", async function (req, res) {
     */
 
     //let result = await getFileImagesAuth(files["files"][0]["key"], featureID).catch(error => console.log(error));
-    result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
+    let result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
     //console.log(result);
 
-
+    
     let ret = "<html>";
     ret += "<body>";
     for (var img in result["images"]) {
@@ -566,10 +683,10 @@ app.get("/fileImage", async function (req, res) {
     }
     ret += "</body>";
     ret += "</html>";
-
+    
     res.send(ret);
-
-
+    
+    
 });
 
 //return all other files when requested using the given path

@@ -4,7 +4,10 @@
 
 <div class="navbar">
 <label for="uname" class = "navbarheading"><b>Home</b></label>
+<input  class = "auth_field" placeholder="Enter TeamID" name="teamid" type = "text" />
+<input class = "auth_field_one" type="submit" value="Submit">
 	<div class = "icon">
+
 		<svg width="48" height="39" viewBox="0 0 48 39" fill="none" xmlns="http://www.w3.org/2000/svg">
 		<circle cx="24" cy="19" r="12" fill="black" fill-opacity="0.6"/>
 		<path d="M25.793 20.0488C26.3242 20.2324 26.8027 20.4902 27.2285 20.8223C27.6582 21.1504 28.0215 21.5312 28.3184 21.9648C28.6191 22.3984 28.8496 22.873 29.0098 23.3887C29.1699 23.9043 29.25 24.4414 29.25 25H28.5C28.5 24.3594 28.3848 23.7656 28.1543 23.2188C27.9277 22.668 27.6133 22.1914 27.2109 21.7891C26.8086 21.3867 26.332 21.0723 25.7812 20.8457C25.2344 20.6152 24.6406 20.5 24 20.5C23.582 20.5 23.1797 20.5527 22.793 20.6582C22.4062 20.7637 22.0449 20.9141 21.709 21.1094C21.377 21.3008 21.0742 21.5332 20.8008 21.8066C20.5312 22.0762 20.2988 22.3789 20.1035 22.7148C19.9121 23.0469 19.7637 23.4062 19.6582 23.793C19.5527 24.1797 19.5 24.582 19.5 25H18.75C18.75 24.4375 18.832 23.9004 18.9961 23.3887C19.1602 22.873 19.3926 22.4004 19.6934 21.9707C19.9941 21.541 20.3574 21.1621 20.7832 20.834C21.2129 20.5059 21.6914 20.2461 22.2188 20.0547C21.9141 19.8906 21.6406 19.6914 21.3984 19.457C21.1563 19.2227 20.9492 18.9629 20.7773 18.6777C20.6094 18.3887 20.4785 18.082 20.3848 17.7578C20.2949 17.4297 20.25 17.0937 20.25 16.75C20.25 16.2305 20.3477 15.7441 20.543 15.291C20.7383 14.834 21.0059 14.4355 21.3457 14.0957C21.6855 13.7559 22.082 13.4883 22.5352 13.293C22.9922 13.0977 23.4805 13 24 13C24.5195 13 25.0059 13.0977 25.459 13.293C25.916 13.4883 26.3145 13.7559 26.6543 14.0957C26.9941 14.4355 27.2617 14.834 27.457 15.291C27.6523 15.7441 27.75 16.2305 27.75 16.75C27.75 17.0937 27.7031 17.4277 27.6094 17.752C27.5195 18.0762 27.3887 18.3809 27.2168 18.666C27.0488 18.9512 26.8438 19.2129 26.6016 19.4512C26.3633 19.6855 26.0938 19.8848 25.793 20.0488ZM21 16.75C21 17.1641 21.0781 17.5527 21.2344 17.916C21.3945 18.2793 21.6094 18.5977 21.8789 18.8711C22.1523 19.1406 22.4707 19.3555 22.834 19.5156C23.1973 19.6719 23.5859 19.75 24 19.75C24.4141 19.75 24.8027 19.6719 25.166 19.5156C25.5293 19.3555 25.8457 19.1406 26.1152 18.8711C26.3887 18.5977 26.6035 18.2793 26.7598 17.916C26.9199 17.5527 27 17.1641 27 16.75C27 16.3359 26.9199 15.9473 26.7598 15.584C26.6035 15.2207 26.3887 14.9043 26.1152 14.6348C25.8457 14.3613 25.5293 14.1465 25.166 13.9902C24.8027 13.8301 24.4141 13.75 24 13.75C23.5859 13.75 23.1973 13.8301 22.834 13.9902C22.4707 14.1465 22.1523 14.3613 21.8789 14.6348C21.6094 14.9043 21.3945 15.2207 21.2344 15.584C21.0781 15.9473 21 16.3359 21 16.75Z" fill="white"/>
@@ -17,7 +20,7 @@
 <br/>
 <br/>
 <div class =  "all_features_panel">
-	
+
 	<ng-container *ngFor="let pr of projects" >
 	<div class = "feature_panel" >
 		<label for = "featurelabel" class = "feature_label">
@@ -34,15 +37,15 @@
 		<div class = "project_image">
 			<img src = "{{pr.thumbnail_url}}"/>
 
-		</div> 
+		</div>
 
 
 		<button class = "feature_button" (click)="view_features(pr.id, pr.title)"> View Features </button>
-		
 
-		
 
-	</div> 
+
+
+	</div>
 
 	<br/>
 	<br/>
@@ -50,7 +53,7 @@
 	</ng-container>
 	<!-- <div class = "feature_panel" >
 		<label for = "featurelabel" class = "feature_label">
-			 Edge 
+			 Edge
 		</label>
 
 		<p class = "feature_paragraph">
@@ -63,14 +66,14 @@
 		<div class = "project_image">
 			<img src = "https://c.s-microsoft.com/en-us/CMSImages/Edge_1920_panel9_MultiFeature_Books.jpg?version=ef796936-6e37-bbc9-db0c-7071c1094d01"/>
 
-		</div> 
+		</div>
 
 
 		<button class = "feature_button"> View Features </button>
-		
 
 
-		
+
+
 
 	</div> -->
 
@@ -84,7 +87,7 @@
 			 Sharepoint
 		</label>
 		<p class = "feature_paragraph">
-		  SharePoint is a web-based collaborative platform that integrates with Microsoft Office. Launched in 2001, SharePoint is primarily sold as a document management and storage system, but the product is highly configurable and usage varies substantially among organizations. 
+		  SharePoint is a web-based collaborative platform that integrates with Microsoft Office. Launched in 2001, SharePoint is primarily sold as a document management and storage system, but the product is highly configurable and usage varies substantially among organizations.
 
 		</p>
 
