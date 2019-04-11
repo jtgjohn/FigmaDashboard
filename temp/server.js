@@ -4,7 +4,7 @@ var path = require('path');
 var fetch = require('isomorphic-fetch');
 var cors = require('cors');
 require('dotenv').config();
-
+var ObjectID = require('mongodb').ObjectID;
 const mongo = require('mongodb').MongoClient;
 const mongo_url = process.env.MONGO_URL;
 
@@ -188,7 +188,7 @@ function getVersions(featureId, callback) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        dbo.collection("versions").find({fid: featureId}).sort({date: 1}).toArray(function(err, result) {
+        dbo.collection("versions").find({fid: featureId}).sort({date: -1}).toArray(function(err, result) {
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
@@ -201,7 +201,7 @@ function getMostRecentVersionImage(featureId, callback) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        dbo.collection("versions").find({fid: featureId}).sort({date: 1}).limit(1).toArray(function(err, result) {
+        dbo.collection("versions").find({fid: featureId}).sort({date: -1}).limit(1).toArray(function(err, result) {
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
@@ -233,9 +233,43 @@ function postComment(versionId, userEmail, comment) {
             commentBody: comment,
             timestamp: date
         };
-
-        dbo.collection("versions").updateOne({_id: versionId}, {$push: {comments: comment}}, function(err, result) {
+        console.log("Updating versionID");
+        console.log(versionId);
+        dbo.collection("versions").find({_id: ObjectID(versionId)}).toArray(function(err, result) {
+            console.log("RESULTAT");
+            console.log(result);
+       
+        });
+        var comments = [];
+        comments.push(comment);
+        dbo.collection("versions").updateOne({_id: ObjectID(versionId)}, {$push: {comments: comment}}, function(err, result) {
+            // console.log(result);
             if (err) throw err;
+            db.close();
+        });
+        dbo.collection("versions").updateOne({_id: ObjectID(versionId), comments: {$exists: false}},  {$set: {comments: comments}},
+            function(err, result){
+                console.log(result);
+        });
+        
+    });
+}
+
+
+function getComments(versionId, callback){
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+
+        var date = new Date();
+       
+        console.log("RECEIVING Version id");
+        console.log(versionId);
+        dbo.collection("versions").find({_id: versionId}).toArray(function(err, result) {
+            console.log("RESULTAT");
+            console.log(result);
+            if (err) callback(err, null);
+            else callback(null, result);
             db.close();
         });
     });
@@ -380,6 +414,55 @@ app.post("/projectsbyid", async function (req, res){
     });
 });
 
+app.post("/getcomments", async function (req, res){
+    req.on('data', async (chunk) => {
+
+         var version_id = JSON.parse(chunk)["_id"];
+         getComments(version_id, function(err, result) {
+                 console.log("CURR COMMENTS...");
+                 console.log(result);
+                if (err) throw err;
+                else res.send(result);
+         });
+
+    });
+});
+
+
+app.post("/updatestatus", async function (req, res){
+    req.on('data', async (chunk) => {
+          mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+        console.log(JSON.parse(chunk));
+       
+        dbo.collection("versions").updateOne({_id: ObjectID(JSON.parse(chunk)["versionId"])}, {$set: {status: JSON.parse(chunk)["status"]}}, function(err, result) {
+            console.log("VERS");
+            console.log(result);
+            if (err) throw err;
+            db.close();
+        });
+       
+        
+    });
+        
+         
+
+    });
+});
+app.post("/addcomment", async function (req, res){
+    req.on('data', async (chunk) => {
+
+        var user = await getUserAuth();
+         console.log("USER");
+          console.log(user);
+         var user_email = user["email"];
+         var comment = JSON.parse(chunk)["comment"];
+         var version_id = JSON.parse(chunk)["_id"];
+         postComment(version_id, user_email, comment);
+
+    });
+});
 
 app.post("/addversion", async function (req, res){
     req.on('data', async (chunk) => {
@@ -521,7 +604,11 @@ app.get("/versionInfo", function (req, res) {
 });
 
 app.get("/getVersions", function(req, res) {
-    getVersions(req.fid, function(err, result) {
+
+    console.log("REQ");
+    console.log(req.query.fid);
+    
+    getVersions(req.query.fid, function(err, result) {
         if (err) throw err;
         else res.send(result);
     });

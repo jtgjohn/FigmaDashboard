@@ -36,7 +36,7 @@
 
 <div class = "export_button_panel">
 	
-	<button class = "export_button" (click) = "addnewversion()" *ngIf = "panelvisible == false"> Add New Version </button>
+	<button class = "export_button" (click) = "addnewversion()"> Add New Version </button>
 
 
 	<div class = "gear_parent">
@@ -94,7 +94,7 @@
 			  <option value="#BDBDBD" class = "grayoption" > John </option>
 			  <option value="#BDBDBD" class = "grayoption"> Rutvik </option>
 	  </select> -->
-	  <input class = "reviewer_dropdown_version"  id = "reviewer_d" (keyup)="onKey($event)" placeholder= "Reviewer" >
+	  <input class = "reviewer_dropdown_version"  id = "reviewer_d" placeholder= "Reviewer" >
 	  	<button class = "export_button_version_add" (click) = "addnewversion()"> Add New Version </button>
 
 	  	<mat-checkbox class = "readyexports" [checked]= "readytoexport" >Ready for Export?</mat-checkbox>
@@ -125,15 +125,40 @@
 			{{pr.title}}
 		</label>
 
-		<!-- <p class = "feature_paragraph">
+		<p class = "feature_paragraph">
 			Last Modified: {{pr.last_modified}}
 
 
 		</p>
- -->
+
+		<button class = "comments_options" (click) = "togglecomments()">
+		  View Comments Pane
+		</button>
+
+
+		<br/>
+		<br/>
+		<br/>
+		<div class = "toggle_panel" *ngIf = "commentson == true">
+		<p class = "comments_panel" *ngFor = "let comment of comments[pr.id]" > {{comment}} </p>
+		</div>
+
+		<input class = "comment_enter"  id = "comment_place"  placeholder= "Enter Comment" >
+
+		<button id = "add_comment" (click) = "addcomment(pr.version_id)">
+		  Add Comment
+		</button>
+
+ 		<select [compareWith]="compareFn" [ngStyle]="{'background-color': allcolors[pr.id]}"  [(ngModel)]="allcolors[pr.id]"   
+			class = "approval_dropdown" id = "1sel" (change)="onChange(pr.version_id, $event.target.value)">
+
+			  <option value="#F2C94C" class = "yellowoption" [selected] = "true"> Pending Approval</option>
+			  <option value="#6FCF97" class = "greenoption" >Approved</option>
+			  <option value="#EB5757" class = "redoption"> Changes Requested </option>
+			</select>
 
 		<div class = "project_image">
-			<img src = "{{pr.thumbnail_url}}"/>
+			<img src = "{{pr.thumbnail_url}}" />
 
 		</div> 
 

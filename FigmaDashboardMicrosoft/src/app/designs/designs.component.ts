@@ -18,7 +18,9 @@ export interface Design{
   title:string,
   thumbnail_url: string,
   last_modified: string,
-  id: string
+  id: number
+  status: string,
+  version_id: string
 };
 
 
@@ -30,7 +32,10 @@ export interface Design{
 export class DesignsComponent implements OnInit {
 	color = "";	
 	color1 = "";
+	commentson:boolean = true;
 	colorversion = "";
+	allcolors = [];
+	comments = [];
 	colorversionreview = "";
 	changeworthy:boolean = false;
 	panelvisible:boolean = false;
@@ -77,6 +82,62 @@ export class DesignsComponent implements OnInit {
       headers: headers
     });
   }
+
+  modifyStatus(versionId, status){
+  	const headers = new HttpHeaders({
+       
+        'Content-Type': 'application/json'
+    });
+
+    // console.log("DATA: " + data);
+    // console.log("HEADERS: " + headers);
+    //make a cross origin POST request for user timeline info.
+    return this.http.post('http://127.0.0.1:8080/updatestatus', JSON.stringify({"versionId": versionId, "status": status}), {
+      headers: headers
+    });
+  }
+
+  onChange(versionId, val){
+  	this.modifyStatus(versionId, val).subscribe((res:any) => {
+         // console.log(res);
+         // for (let key in res["images"]) {
+   
+         // 	var proj = {} as Design;
+         // 	proj.title = res["lastModified"];
+         // 	proj.thumbnail_url = res["images"][key];
+         // 	proj.last_modified = res["lastModified"];
+         // 	proj.id = "";
+         // 	this.designs.push(proj);
+         // }
+
+
+         // console.log(this.features);
+      }, (err) => {
+        console.log(err);
+      });
+  }
+  togglecomments(){
+  	this.commentson = !this.commentson;
+  }
+  getVersions(){
+  	 var datax; 
+    const headers = new HttpHeaders({
+       
+        'Content-Type': 'application/json'
+    });
+
+    var url = "http://127.0.0.1:8080/getVersions";
+    let paramsh = new HttpParams().set('fid', this.id);
+
+    
+
+    // console.log("DATA: " + data);
+    // console.log("HEADERS: " + headers);
+    //make a cross origin POST request for user timeline info.
+    return this.http.get(url, {
+      params: paramsh
+    });
+  }
   ngOnInit() {
 
 
@@ -104,9 +165,10 @@ export class DesignsComponent implements OnInit {
 
     });
 
-
+var counter = 0;
   	 this.getFileImages().subscribe((res:any) => {
          console.log(res);
+         
          for (let key in res["images"]) {
    
          	var proj = {} as Design;
@@ -114,9 +176,79 @@ export class DesignsComponent implements OnInit {
          	proj.thumbnail_url = res["images"][key];
          	proj.last_modified = res["lastModified"];
          	this.latest_thumbnail_url = proj.thumbnail_url;
-         	proj.id = "";
+         	proj.status = "Pending Approval";
+         	proj.id = counter;
+         	proj.version_id = "";
+         	this.allcolors.push("#F2C94C");
          	this.designs.push(proj);
+         	this.comments.push([]);
+
+
+         	counter++;
          }
+
+
+         // console.log(this.features);
+      }, (err) => {
+        console.log(err);
+      });
+
+
+  	 this.getVersions().subscribe((res:any) => {
+         console.log(res);
+         for(var i = 0; i < res.length; ++i){
+         	var proj = {} as Design;
+
+         	proj.title = res[i]["whatisnewinfo"];
+         	proj.thumbnail_url = res[i]["imagePath"];
+         	proj.last_modified = res[i]["timestamp"];
+         	this.latest_thumbnail_url = proj.thumbnail_url;
+         	proj.status = res[i]["status"];
+         	if(proj.status === "Draft"||proj.status === "Request Approval"){
+         		proj.status = "Pending Approval";
+         	}
+
+         	proj.id = counter;
+         	if(proj.status === "Pending Approval"){
+         		this.allcolors[proj.id] = "#F2C94C";
+         	}
+         	else if (proj.status === "#F2C94C"){
+         		this.allcolors[proj.id] = "#F2C94C";
+         	}
+         	else if(proj.status === "#6FCF97"){
+         		this.allcolors[proj.id] = "#6FCF97";
+         	}else if(proj.status === "#EB5757"){
+         		this.allcolors[proj.id] = "#EB5757";
+         	}
+         	console.log(proj.id);
+         	proj.version_id = res[i]["_id"];
+			var curr_comments;
+         	if("comments" in res[i]){
+         	 curr_comments = res[i]["comments"];
+         	}else{
+         		curr_comments = [];
+         	}
+
+
+       //   	var all_comments = this.getcommentsall(proj.version_id).subscribe((res:any) => {
+       //   			console.log(res);
+		     //  	}, (err) => {
+		     //    console.log(err);
+		     // });
+
+
+         	// console.log(all_comments);
+
+         	this.allcolors.push("#F2C94C");
+         	this.designs.push(proj);
+         	this.comments.push(curr_comments);
+
+         	counter++;
+         }
+
+
+         console.log(this.comments);
+         
 
 
          // console.log(this.features);
@@ -135,6 +267,70 @@ export class DesignsComponent implements OnInit {
   }
 
 
+  addcommentsub(version_id){
+  	 var datax;
+    const headers = new HttpHeaders({
+       
+        'Content-Type': 'application/json'
+    });
+
+    var comment = (<HTMLInputElement>document.getElementById("comment_place")).value;
+    console.log(comment);
+    console.log(version_id);
+    (<HTMLInputElement>document.getElementById("comment_place")).value = "";
+
+    // console.log("DATA: " + data);
+    // console.log("HEADERS: " + headers);
+    //make a cross origin POST request for user timeline info.
+    return this.http.post('http://127.0.0.1:8080/addcomment', JSON.stringify({"comment": comment,
+	"_id": version_id}), {
+     headers: headers
+    });
+  }
+
+  getcommentsall(version_id){
+  	 var datax;
+    const headers = new HttpHeaders({
+       
+        'Content-Type': 'application/json'
+    });
+
+   
+
+    // console.log("DATA: " + data);
+    // console.log("HEADERS: " + headers);
+    //make a cross origin POST request for user timeline info.
+    return this.http.post('http://127.0.0.1:8080/getcomments', JSON.stringify({
+	"_id": version_id}), {
+     headers: headers
+    });
+  }
+
+  getcomments(version_id){
+  	this.getcommentsall(version_id).subscribe((res:any) => {
+  		console.log(res);
+  	});
+  }
+
+  addcomment(version_id){
+  	this.addcommentsub(version_id).subscribe((res:any) => {
+         // console.log(res);
+         // for (let key in res["images"]) {
+   
+         // 	var proj = {} as Design;
+         // 	proj.title = res["lastModified"];
+         // 	proj.thumbnail_url = res["images"][key];
+         // 	proj.last_modified = res["lastModified"];
+         // 	proj.id = "";
+         // 	this.designs.push(proj);
+         // }
+
+
+         // console.log(this.features);
+      }, (err) => {
+        console.log(err);
+      });
+  }
 
   addnewversioncall(status){
   	  var datax;
