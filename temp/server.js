@@ -277,7 +277,8 @@ function getComments(versionId, callback){
     });
 }
 
-function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoExport) {
+function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoExport, callback) {
+     var ops_tmp = {};
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
@@ -298,9 +299,24 @@ function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoE
         dbo.collection("versions").insertOne(doc, function(err, result) {
             if (err) throw err;
             console.log(result);
+            console.log(result["ops"][0]);
+            ops_tmp = result["ops"][0];
+            console.log("OPS TEMP:");
+            console.log(ops_tmp);
+            callback(null, ops_tmp);
             db.close();
+
+            
+           
         });
+
     });
+
+
+    console.log("BEFORE RETURN");
+    console.log(ops_tmp);
+   
+    return ops_tmp;
 }
 
 function getUserTeams(uEmail, callback) {
@@ -504,7 +520,13 @@ app.post("/addversion", async function (req, res){
           console.log(fid);
 
 
-          postVersionInfo(info_dict, fid, imagePath, frameChanged, whatisnew, readytoExport);
+          var posted_version = await postVersionInfo(info_dict, fid, imagePath, frameChanged, whatisnew, readytoExport,
+              function(err, result){
+                  console.log("FINAL POST..%j", result);
+                  res.send(JSON.stringify(result));
+              });
+          console.log("POSTED VERSION..");
+          console.log(posted_version);
 
     });
 });

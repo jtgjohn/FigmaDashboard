@@ -32,7 +32,9 @@ export interface Design{
 export class DesignsComponent implements OnInit {
 	color = "";	
 	color1 = "";
-	commentson:boolean = true;
+
+  commentson = [];
+	// commentson:boolean = true;
 	colorversion = "";
 	allcolors = [];
 	comments = [];
@@ -116,8 +118,8 @@ export class DesignsComponent implements OnInit {
         console.log(err);
       });
   }
-  togglecomments(){
-  	this.commentson = !this.commentson;
+  togglecomments(id){
+  	this.commentson[id] = !this.commentson[id];
   }
   getVersions(){
   	 var datax; 
@@ -206,6 +208,7 @@ var counter = 0;
          	proj.title = res[i]["whatisnewinfo"];
          	proj.thumbnail_url = res[i]["imagePath"];
          	proj.last_modified = res[i]["timestamp"];
+           this.commentson.push(false);
          	this.latest_thumbnail_url = proj.thumbnail_url;
          	proj.status = res[i]["status"];
          	if(proj.status === "Draft"||proj.status === "Request Approval"){
@@ -407,7 +410,34 @@ var counter = 0;
 		return;
 	}
   	this.addnewversioncall(status).subscribe((res:any) => {
-         // console.log(res);
+
+      /*
+          title:string,
+  thumbnail_url: string,
+  last_modified: string,
+  id: number
+  status: string,
+  version_id: string
+
+
+      */
+         console.log(res);
+         var proj = {} as Design;
+         proj.title = res["whatisnewinfo"];
+         proj.thumbnail_url = this.latest_thumbnail_url;
+         proj.last_modified = res["timestamp"];
+         proj.id = 0;
+         proj.status = res["status"];
+         proj.version_id = res["_id"];
+         for(var x = 0; x < this.designs.length; ++x){
+           this.designs[x].id++;
+
+         }
+         this.allcolors.unshift("#F2C94C");
+         this.commentson.unshift(false);
+         this.comments.unshift([]);
+         this.designs.unshift(proj);
+
          // for (let key in res["images"]) {
    
          // 	var proj = {} as Design;

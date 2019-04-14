@@ -131,7 +131,7 @@
 
 		</p>
 
-		<button class = "comments_options" (click) = "togglecomments()">
+		<button class = "comments_options" (click) = "togglecomments(pr.id)" id = "{{'view' + pr.id }}">
 		  View Comments Pane
 		</button>
 
@@ -139,7 +139,7 @@
 		<br/>
 		<br/>
 		<br/>
-		<div class = "toggle_panel" *ngIf = "commentson == true">
+		<div class = "toggle_panel" *ngIf = "commentson[pr.id] == true">
 		<p class = "comments_panel" *ngFor = "let comment of comments[pr.id]" > {{comment}} </p>
 		<br/>
 		</div>
