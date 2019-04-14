@@ -8,12 +8,12 @@ var ObjectID = require('mongodb').ObjectID;
 const mongo = require('mongodb').MongoClient;
 const mongo_url = process.env.MONGO_URL;
 
-const teamID = '';
+var teamID = '';
 const featureName = "Export Feature Dropdown";
 
 app.options('*', cors());
 
-AccessToken = "";
+AccessToken = "T8-l3zpJSUWMcaYAf5qZvWfYKeKwYHkCRP7ccouF";
 callback = "http://localhost:8080/contents.html";
 callback2 = "http://localhost:4200/home";
 
@@ -189,6 +189,7 @@ function getVersions(featureId, callback) {
         var dbo = db.db("figmaDB");
 
         dbo.collection("versions").find({fid: featureId}).sort({date: -1}).toArray(function(err, result) {
+            console.log(result);
             if (err) callback(err, null);
             else callback(null, result);
             db.close();
@@ -222,13 +223,14 @@ function getVersionInfo(versionId, callback) {
     });
 }
 
-function postComment(versionId, userEmail, comment) {
+function postComment(userHandle, versionId, userEmail, comment) {
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
         var date = new Date();
         var doc = {
+            userHandle: userHandle,
             userEmail: userEmail,
             commentBody: comment,
             timestamp: date
@@ -241,13 +243,13 @@ function postComment(versionId, userEmail, comment) {
        
         });
         var comments = [];
-        comments.push(comment);
-        dbo.collection("versions").updateOne({_id: ObjectID(versionId)}, {$push: {comments: comment}}, function(err, result) {
+        comments.push(doc);
+        dbo.collection("versions").updateOne({_id: ObjectID(versionId)}, {$push: {comments: comments}}, function(err, result) {
             // console.log(result);
             if (err) throw err;
             db.close();
         });
-        dbo.collection("versions").updateOne({_id: ObjectID(versionId), comments: {$exists: false}},  {$set: {comments: comments}},
+        dbo.collection("versions").updateOne({_id: ObjectID(versionId), comments: {$exists: false}},  {$set: {comments: [comments]}},
             function(err, result){
                 console.log(result);
         });
@@ -456,10 +458,17 @@ app.post("/addcomment", async function (req, res){
         var user = await getUserAuth();
          console.log("USER");
           console.log(user);
+
+         var user_handle = user["handle"];
          var user_email = user["email"];
          var comment = JSON.parse(chunk)["comment"];
+         console.log("COMMENT");
+         console.log(comment);
+         console.log(chunk);
+          console.log(JSON.parse(chunk));
          var version_id = JSON.parse(chunk)["_id"];
-         postComment(version_id, user_email, comment);
+         postComment(user_handle, version_id, user_email, comment);
+         res.send(JSON.stringify({"userHandle": user_handle, "commentBody": comment}));
 
     });
 });
@@ -506,7 +515,7 @@ app.post("/teamProjectsall", async function (req, res) {
     req.on('data', async (chunk) => {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
-        teamID = JSON.parse(chunk[teamID_req])
+        teamID = JSON.parse(chunk)["teamid"];
         if(AccessToken == ""){
             let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             console.log(result);
@@ -610,7 +619,11 @@ app.get("/getVersions", function(req, res) {
     
     getVersions(req.query.fid, function(err, result) {
         if (err) throw err;
-        else res.send(result);
+
+        else{
+        console.log(result); 
+            res.send(result);
+        }
     });
 })
 

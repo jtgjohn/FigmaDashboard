@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
 
   view_id_view(teamid: string){
 		var datax;
-		var teamid = document.getElementById("teamident");
+		var teamid = (<HTMLInputElement>document.getElementById("teamident")).value;
 	 const headers = new HttpHeaders({
 
 			 'Content-Type': 'application/json'
@@ -38,12 +38,32 @@ export class HomeComponent implements OnInit {
 	 // console.log("DATA: " + data);
 	 // console.log("HEADERS: " + headers);
 	 //make a cross origin POST request for user timeline info.
-	 return this.http.post('http://127.0.0.1:8080/teamProjectsall', JSON.stringify({"teamid": teamid}), {
+	 return this.http.post('http://127.0.0.1:8080/teamProjectsall', JSON.stringify({"code": this.code, "teamid": teamid}), {
 		 headers: headers
 	 });
 
 
 	}
+
+
+  view_id_view_head(teamid:string){
+      this.view_id_view(teamid)
+
+      .subscribe((res:any) => {
+         console.log(res);
+         for(var i = 0; i < res.length; ++i){
+           var proj = {} as Project;
+           proj.title = res[i]["name"];
+           proj.thumbnail_url = res[i]["thumbnailUrl"];
+           proj.last_modified = res[i]["files"][0]["last_modified"];
+           proj.id = res[i]["id"];
+           this.projects.push(proj);
+         }
+
+      }, (err) => {
+        console.log(err);
+      });
+  }
   getProjects(code: string){
      var datax;
 		 var teamid;
@@ -69,22 +89,22 @@ export class HomeComponent implements OnInit {
 
 
 
-    this.getProjects(this.code)
+    // this.getProjects(this.code)
 
-      .subscribe((res:any) => {
-         console.log(res);
-         for(var i = 0; i < res.length; ++i){
-         	var proj = {} as Project;
-         	proj.title = res[i]["name"];
-         	proj.thumbnail_url = res[i]["thumbnailUrl"];
-         	proj.last_modified = res[i]["files"][0]["last_modified"];
-         	proj.id = res[i]["id"];
-         	this.projects.push(proj);
-         }
+    //   .subscribe((res:any) => {
+    //      console.log(res);
+    //      for(var i = 0; i < res.length; ++i){
+    //      	var proj = {} as Project;
+    //      	proj.title = res[i]["name"];
+    //      	proj.thumbnail_url = res[i]["thumbnailUrl"];
+    //      	proj.last_modified = res[i]["files"][0]["last_modified"];
+    //      	proj.id = res[i]["id"];
+    //      	this.projects.push(proj);
+    //      }
 
-      }, (err) => {
-        console.log(err);
-      });
+    //   }, (err) => {
+    //     console.log(err);
+    //   });
 
 
 

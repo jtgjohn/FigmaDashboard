@@ -76,7 +76,7 @@
 		<label for = "featurelabel" class = "feature_label">
 			 02/15/2019 14:30
 		</label>
-	  <input class = "whatsnew" (keyup)="onKey($event)" id = "wnew" placeholder= "What's New?" >
+	  <input class = "whatsnew"  id = "wnew" placeholder= "What's New?" >
 
 	  <select [compareWith]="compareFn" [ngStyle]="{'background-color': colorversion}"  [(ngModel)]="colorversion" 
 			class = "approval_dropdown_version"  >
@@ -141,11 +141,12 @@
 		<br/>
 		<div class = "toggle_panel" *ngIf = "commentson == true">
 		<p class = "comments_panel" *ngFor = "let comment of comments[pr.id]" > {{comment}} </p>
+		<br/>
 		</div>
 
-		<input class = "comment_enter"  id = "comment_place"  placeholder= "Enter Comment" >
+		<input class = "comment_enter"  id = "{{ pr.id }}" placeholder= "Enter Comment" >
 
-		<button id = "add_comment" (click) = "addcomment(pr.version_id)">
+		<button id = "add_comment" (click) = "addcomment(pr.id, pr.version_id)">
 		  Add Comment
 		</button>
 

@@ -171,20 +171,21 @@ var counter = 0;
          
          for (let key in res["images"]) {
    
-         	var proj = {} as Design;
-         	proj.title = res["lastModified"];
-         	proj.thumbnail_url = res["images"][key];
-         	proj.last_modified = res["lastModified"];
-         	this.latest_thumbnail_url = proj.thumbnail_url;
-         	proj.status = "Pending Approval";
-         	proj.id = counter;
-         	proj.version_id = "";
-         	this.allcolors.push("#F2C94C");
-         	this.designs.push(proj);
-         	this.comments.push([]);
+         	// var proj = {} as Design;
+         	// proj.title = res["lastModified"];
+         	// proj.thumbnail_url = res["images"][key];
+         	// proj.last_modified = res["lastModified"];
+         	this.latest_thumbnail_url = res["images"][key];
+         	// proj.status = "Pending Approval";
+         	// proj.id = counter;
+         	// proj.version_id = "";
+         	// this.allcolors.push("#F2C94C");
+         	// this.designs.push(proj);
+          //  console.log("in image");
+         	// this.comments.push([]);
 
 
-         	counter++;
+         	// counter++;
          }
 
 
@@ -194,9 +195,12 @@ var counter = 0;
       });
 
 
+     console.log(this.comments);
   	 this.getVersions().subscribe((res:any) => {
          console.log(res);
+
          for(var i = 0; i < res.length; ++i){
+           this.comments.push([]);
          	var proj = {} as Design;
 
          	proj.title = res[i]["whatisnewinfo"];
@@ -222,9 +226,25 @@ var counter = 0;
          	}
          	console.log(proj.id);
          	proj.version_id = res[i]["_id"];
-			var curr_comments;
+           console.log(proj.version_id);
+			var curr_comments = [];
+          console.log(res[i]);
+ 
          	if("comments" in res[i]){
-         	 curr_comments = res[i]["comments"];
+             console.log("HERE");
+             for(var x = 0; x < res[i]["comments"].length; ++x){
+               if(typeof res[i]["comments"][x] !== 'string' && res[i]["comments"][x]["commentBody"]!=="" ){
+                 console.log("HERE??..");
+                 var handle = res[i]["comments"][x][0]["userHandle"];
+                 console.log(handle);
+                 var colon = " : ";
+                 var commentbody = res[i]["comments"][x][0]["commentBody"];
+                 var final = handle.concat(colon).concat(commentbody);
+             	   curr_comments.push(final);
+                  this.comments[this.comments.length - 1].push(final);
+                  console.log(curr_comments);
+               }
+             }
          	}else{
          		curr_comments = [];
          	}
@@ -237,17 +257,20 @@ var counter = 0;
 		     // });
 
 
-         	// console.log(all_comments);
+         	
 
          	this.allcolors.push("#F2C94C");
          	this.designs.push(proj);
-         	this.comments.push(curr_comments);
+         	// this.comments[this.comments.length-1].push(curr_comments);
+           console.log(this.comments);
 
          	counter++;
          }
 
-
          console.log(this.comments);
+
+
+        
          
 
 
@@ -259,6 +282,7 @@ var counter = 0;
   // ele.click();
   // 	 (<HTMLSelectElement>document.getElementById("1sel")).value = "Pending Approval";
   // 	 (<HTMLSelectElement>document.getElementById("2sel")).value = "Pending Approval";
+   console.log(this.comments);
   }
 
 
@@ -267,17 +291,18 @@ var counter = 0;
   }
 
 
-  addcommentsub(version_id){
+  addcommentsub(id, version_id){
   	 var datax;
     const headers = new HttpHeaders({
        
         'Content-Type': 'application/json'
     });
 
-    var comment = (<HTMLInputElement>document.getElementById("comment_place")).value;
+    var comment = (<HTMLInputElement>document.getElementById(id)).value;
     console.log(comment);
     console.log(version_id);
-    (<HTMLInputElement>document.getElementById("comment_place")).value = "";
+    var total = id;
+    (<HTMLInputElement>document.getElementById(total)).value = "";
 
     // console.log("DATA: " + data);
     // console.log("HEADERS: " + headers);
@@ -312,9 +337,13 @@ var counter = 0;
   	});
   }
 
-  addcomment(version_id){
-  	this.addcommentsub(version_id).subscribe((res:any) => {
-         // console.log(res);
+  addcomment(id, version_id){
+  	this.addcommentsub(id, version_id).subscribe((res:any) => {
+         console.log(res);
+         var comment = res["userHandle"] + " : " + res["commentBody"];
+         console.log(this.comments);
+         console.log(id);
+         this.comments[id].push(comment);
          // for (let key in res["images"]) {
    
          // 	var proj = {} as Design;
@@ -341,6 +370,21 @@ var counter = 0;
 
     var reviewer = (<HTMLInputElement>document.getElementById("reviewer_d")).value;
     var whatisnew = (<HTMLInputElement>document.getElementById("wnew")).value;
+
+
+      // var proj = {} as Design;
+
+      //      // proj.title = res[i]["whatisnewinfo"];
+      //      // proj.thumbnail_url = res[i]["imagePath"];
+      //      // proj.last_modified = res[i]["timestamp"];
+      //      proj.title = whatisnew;
+      //      proj.thumbnail_url = this.latest_thumbnail_url;
+      //      proj.status = status;
+      //      proj.id = this.designs.length;
+      //      proj.last_modified = "";
+      //      proj.version_id = "";
+      //      this.designs.push(proj);
+
     // console.log("DATA: " + data);
     // console.log("HEADERS: " + headers);
     //make a cross origin POST request for user timeline info.
