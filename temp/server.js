@@ -188,7 +188,7 @@ function getVersions(featureId, callback) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        dbo.collection("versions").find({fid: featureId}).sort({date: -1}).toArray(function(err, result) {
+        dbo.collection("versions").find({fid: featureId}).sort({actual_time_obj: -1}).toArray(function(err, result) {
             console.log(result);
             if (err) callback(err, null);
             else callback(null, result);
@@ -283,7 +283,32 @@ function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoE
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        var date = new Date();
+        // var date = new Date();
+        // var moment_c = require('moment');
+        // var now = moment_c().format('MMMM Do YYYY, h:mm:ss a');
+        // console.log(now);
+
+
+        var moment = require('moment-timezone');
+        var tz_s = moment.tz.guess();
+        // var curr = now + tz_s;
+        // console.log("TOTAL");
+        // console.log(curr);
+
+
+        var actual_time_final = moment().tz(tz_s);
+
+        var actual_time_format = actual_time_final.format('MMMM Do YYYY, h:mm:ss a z');
+        console.log("ACTUAL TIME FINAL..");
+        console.log(actual_time_final);
+
+        // var tmp_c = moment_c().clone().tz(tz_s);
+
+        // var current_time_in_zone = tmp_c.format("DD-MM-YYYY h:mm:ss A");
+        // console.log("CURRENT TIME IN ZONE.");
+        // console.log(current_time_in_zone);
+        // console.log("TIMEZONE: ");
+        // console.log(tz_s);
         var doc = {
             poster: info.poster,
             status: info.status,
@@ -291,7 +316,8 @@ function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoE
             imagePath: imagePath,
             fid: fid,
             frameChanged: frameChanged,
-            timestamp: date,
+            timestamp: actual_time_format,
+            actual_time_obj: actual_time_final.toDate(),
             whatisnewinfo: whatisnew,
             export: readytoExport
         };
