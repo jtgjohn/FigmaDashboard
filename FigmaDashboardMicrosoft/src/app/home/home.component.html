@@ -21,10 +21,25 @@
 <br/>
 
 <div>
-<input  class = "auth_field_add" placeholder="TeamID" id= "add_team_input" name="teamid" type = "text" />
-<select class = "teamname"  >
+
+<select class = "teamnameretrieve" id = "display_proj" (change)="onChangeTeam($event)">
 
 			  <option value="#F2F2F2"  [selected] = "true"> Team Name </option>
+
+			   <option *ngFor="let status_item of status_values">
+			    {{status_item}}
+			    </option>
+			  <!-- <option value="#F2C94C" class = "yellowoption" > Request Approval </option>
+			  <option value="#BDBDBD" class = "grayoption"> Draft </option> -->
+	  </select>
+<input  class = "auth_field_add" placeholder="TeamID" id= "add_team_input" name="teamid" type = "text" />
+<select class = "teamname" id = "remove_team_input"  >
+
+			  <option value="#F2F2F2"  [selected] = "true"> Team Name </option>
+
+			   <option *ngFor="let status_item of status_values">
+			    {{status_item}}
+			    </option>
 			  <!-- <option value="#F2C94C" class = "yellowoption" > Request Approval </option>
 			  <option value="#BDBDBD" class = "grayoption"> Draft </option> -->
 	  </select>
@@ -34,7 +49,7 @@
 
 
 
-<button class = "auth_field_button_remove" > Remove Team </button>
+<button class = "auth_field_button_remove" (click) = "remove_team()" > Remove Team </button>
 
 </div>
 <div class =  "all_features_panel">

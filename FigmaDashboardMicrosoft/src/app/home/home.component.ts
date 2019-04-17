@@ -23,13 +23,15 @@ export class HomeComponent implements OnInit {
 	code:string = "";
   state:string = "";
 	projects:Project[] = [];
+  status_values: any = [];
   queryParams: Params = null;
   constructor(private activatedRoute: ActivatedRoute, private http: HttpClient,
   	  private router: Router) { }
 
   view_id_view(teamid: string){
+    console.log(teamid);
 		var datax;
-		var teamid = (<HTMLInputElement>document.getElementById("teamident")).value;
+		// var teamid = (<HTMLInputElement>document.getElementById("teamident")).value;
 	 const headers = new HttpHeaders({
 
 			 'Content-Type': 'application/json'
@@ -61,9 +63,13 @@ export class HomeComponent implements OnInit {
    });
   }
 
+
+
+
   add_team(){
     var new_team = (<HTMLInputElement>document.getElementById("add_team_input")).value;
     (<HTMLInputElement>document.getElementById("add_team_input")).value = "";
+    this.status_values.push(new_team);
    this.add_team_sub(new_team)
 
       .subscribe((res:any) => {
@@ -82,6 +88,59 @@ export class HomeComponent implements OnInit {
       });
   }
 
+
+  remove_team_sub(team){
+    var datax;
+    
+   const headers = new HttpHeaders({
+
+       'Content-Type': 'application/json'
+   });
+
+   // console.log("DATA: " + data);
+   // console.log("HEADERS: " + headers);
+   //make a cross origin POST request for user timeline info.
+   return this.http.post('http://127.0.0.1:8080/removeTeam', JSON.stringify({"team": team}), {
+     headers: headers
+   });
+
+  }
+
+  remove_team(){
+    var old_team = (<HTMLSelectElement>document.getElementById("remove_team_input"));
+    var old_team_val = old_team.options[old_team.selectedIndex].text;
+
+    var index = -1;
+
+         for(var i = 0; i < this.status_values.length; ++i){
+           if(this.status_values[i] === old_team_val){
+             index = i;
+           }
+         }
+
+         this.status_values.splice(index, 1);
+
+         
+         // console.log("STATUS VAL: ");
+         // console.log(this.status_values);
+     this.remove_team_sub(old_team_val)
+
+      .subscribe((res:any) => {
+         console.log(res);
+
+         // for(var i = 0; i < res.length; ++i){
+         //   var proj = {} as Project;
+         //   proj.title = res[i]["name"];
+         //   proj.thumbnail_url = res[i]["thumbnailUrl"];
+         //   proj.last_modified = res[i]["files"][0]["last_modified"];
+         //   proj.id = res[i]["id"];
+         //   this.projects.push(proj);
+         // }
+
+      }, (err) => {
+        console.log(err);
+      });
+  }
   view_id_view_head(teamid:string){
       this.view_id_view(teamid)
 
@@ -100,6 +159,30 @@ export class HomeComponent implements OnInit {
         console.log(err);
       });
   }
+
+  public onChangeTeam(event): void {  // event will give you full breif of action
+    const newVal = event.target.value;
+    console.log(newVal);
+     this.view_id_view(newVal)
+
+      .subscribe((res:any) => {
+         console.log(res);
+         this.projects.length = 0;
+         for(var i = 0; i < res.length; ++i){
+           var proj = {} as Project;
+           proj.title = res[i]["name"];
+           proj.thumbnail_url = res[i]["thumbnailUrl"];
+           proj.last_modified = res[i]["files"][0]["last_modified"];
+           proj.id = res[i]["id"];
+           this.projects.push(proj);
+         }
+
+      }, (err) => {
+        console.log(err);
+      });
+    // console.log(newVal);
+  }
+
   getProjects(code: string){
      var datax;
 		 var teamid;
@@ -115,6 +198,22 @@ export class HomeComponent implements OnInit {
       headers: headers
     });
   }
+
+  loadTeams(){
+     var datax;
+     var teamid;
+    const headers = new HttpHeaders({
+
+        'Content-Type': 'application/json'
+    });
+
+    // console.log("DATA: " + data);
+    // console.log("HEADERS: " + headers);
+    //make a cross origin POST request for user timeline info.
+    return this.http.get('http://127.0.0.1:8080/getUserTeams',  {
+      headers: headers
+    });
+  }
   ngOnInit() {
   	this.code = "";
   	this.activatedRoute.queryParams.subscribe(params => {
@@ -123,7 +222,16 @@ export class HomeComponent implements OnInit {
         this.state = params["state"];
     });
 
+    this.loadTeams()
 
+    .subscribe((res:any) => {
+      console.log(res);
+      for(var i = 0; i < res["teamIDs"].length; ++i){
+        this.status_values.push(res["teamIDs"][i]);
+      }
+    }, (err) => {
+      console.log(err);
+    });
 
     // this.getProjects(this.code)
 
@@ -153,5 +261,7 @@ export class HomeComponent implements OnInit {
 queryParams: this.queryParams, queryParamsHandling: "merge" });
 
   }
+
+
 
 }

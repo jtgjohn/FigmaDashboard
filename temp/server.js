@@ -70,6 +70,12 @@ async function getTeamProjectsAuth(teamId){
     });
 
     let ret = await result.json();
+    console.log("FAILURE???");
+    console.log(ret);
+    if(ret["status"] == 400){
+        ret = {"projects": []};
+      
+    }
 
     return ret;
 }
@@ -439,13 +445,26 @@ function postRemoveUserTeams(uEmail, team, callback) {
         var dbo = db.db("figmaDB");
 
         let uTeams = []
-        uTeams = getUserTeams(uEmail);
-        uTeams.splice(uTeams.indexOf(team), 1);
+        console.log("TEAM");
+        console.log(team);
+        getUserTeams(uEmail, function(err, resultteamu){
+             console.log("UTEAMS");
+            console.log(resultteamu);
+            var teams = resultteamu["teamIDs"];
+            teams.splice(teams.indexOf(team), 1);
+            console.log("FINAL Teams");
+            console.log(teams);
+            dbo.collection("users").removeOne({userEmail: uEmail});
 
-        dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: uTeam}}, function(err, result) {
-            if (err) throw err;
-            db.close();
+              dbo.collection("users").insertOne(
+              {userEmail: uEmail, teamIDs: teams});
+
+            // dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: uTeam}}, function(err, result) {
+            //     if (err) throw err;
+            //     db.close();
+            // });
         });
+       
     });
 }
 
@@ -494,6 +513,28 @@ app.get("/user", async function (req, res) {
     ret += "</html>";
 
     res.send(ret);
+});
+
+
+app.get("/getUserTeams", async function (req, res) {
+    let result = await getUserAuth().catch(error => console.log(error));
+    console.log(JSON.stringify(result));
+    let result_second = await getUserTeams(result["email"], function(err, result){
+        console.log(result);
+        res.send(result);
+    });
+    
+});
+
+app.post("/removeTeam", async function (req, res){
+     req.on('data', async (chunk) => {
+          let result = await getUserAuth().catch(error => console.log(error));
+            console.log(JSON.stringify(result));
+            let result_second = await postRemoveUserTeams(result["email"], JSON.parse(chunk)["team"], function(err, result){
+                console.log(result);
+                res.end(result);
+            });
+     });
 });
 
 

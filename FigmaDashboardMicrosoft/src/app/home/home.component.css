@@ -23,7 +23,7 @@ font-size: 14px;
 color: rgba(0, 0, 0, 0.6);
 line-height: 20px;
 position: relative;
-left: 40%;
+left: 30%;
 
 }
 
@@ -32,9 +32,20 @@ left: 40%;
 	font-family: 'segoeui', 'Open Sans';
 	font-size: 14px;
 	position: relative;
-	left: 43.5%;
+	left: 32%;
 	width: 186px;
 	height: 32px;
+}
+
+.teamnameretrieve{
+	background: #F2F2F2;
+	font-family: 'segoeui', 'Open Sans';
+	font-size: 14px;
+	position: relative;
+	left: 10%;
+	width: 186px;
+	height: 32px;
+
 }
 
 .auth_field_button_add{
