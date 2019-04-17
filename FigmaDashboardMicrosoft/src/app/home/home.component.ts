@@ -45,6 +45,42 @@ export class HomeComponent implements OnInit {
 
 	}
 
+  add_team_sub(team){
+      var datax;
+    
+   const headers = new HttpHeaders({
+
+       'Content-Type': 'application/json'
+   });
+
+   // console.log("DATA: " + data);
+   // console.log("HEADERS: " + headers);
+   //make a cross origin POST request for user timeline info.
+   return this.http.post('http://127.0.0.1:8080/postTeam', JSON.stringify({"team": team}), {
+     headers: headers
+   });
+  }
+
+  add_team(){
+    var new_team = (<HTMLInputElement>document.getElementById("add_team_input")).value;
+    (<HTMLInputElement>document.getElementById("add_team_input")).value = "";
+   this.add_team_sub(new_team)
+
+      .subscribe((res:any) => {
+         console.log(res);
+         // for(var i = 0; i < res.length; ++i){
+         //   var proj = {} as Project;
+         //   proj.title = res[i]["name"];
+         //   proj.thumbnail_url = res[i]["thumbnailUrl"];
+         //   proj.last_modified = res[i]["files"][0]["last_modified"];
+         //   proj.id = res[i]["id"];
+         //   this.projects.push(proj);
+         // }
+
+      }, (err) => {
+        console.log(err);
+      });
+  }
 
   view_id_view_head(teamid:string){
       this.view_id_view(teamid)

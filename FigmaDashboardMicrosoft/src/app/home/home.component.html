@@ -19,6 +19,24 @@
 <br/>
 <br/>
 <br/>
+
+<div>
+<input  class = "auth_field_add" placeholder="TeamID" id= "add_team_input" name="teamid" type = "text" />
+<select class = "teamname"  >
+
+			  <option value="#F2F2F2"  [selected] = "true"> Team Name </option>
+			  <!-- <option value="#F2C94C" class = "yellowoption" > Request Approval </option>
+			  <option value="#BDBDBD" class = "grayoption"> Draft </option> -->
+	  </select>
+<br/>
+<button class = "auth_field_button_add" (click) = "add_team()"> Add Team </button>
+
+
+
+
+<button class = "auth_field_button_remove" > Remove Team </button>
+
+</div>
 <div class =  "all_features_panel">
 
 	<ng-container *ngFor="let pr of projects" >

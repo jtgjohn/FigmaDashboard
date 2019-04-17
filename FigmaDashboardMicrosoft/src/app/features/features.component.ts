@@ -94,6 +94,13 @@ queryParams: this.queryParams, queryParamsHandling: "merge" });
 
   }
 
+  navigateHome(){
+    this.queryParams = {code: this.code, state: this.state};
+    console.log("BEFORE..");
+      this.router.navigate(['/home'],     {   relativeTo: this.activatedRoute,
+queryParams: this.queryParams, queryParamsHandling: "merge" });
+  }
+
 
    
 

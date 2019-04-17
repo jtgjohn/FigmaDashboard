@@ -257,6 +257,64 @@ function postComment(userHandle, versionId, userEmail, comment) {
     });
 }
 
+function postAddUserTeams(uEmail, team) {
+    /*
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+
+        dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: team}}, function(err, result) {
+            if (err) throw err;
+            db.close();
+        });
+    });
+
+
+
+    */
+
+    console.log("UEMAIL");
+    console.log(team);
+
+    try {
+        console.log("BEGIn..");
+        let db =  mongo.connect(mongo_url, { useNewUrlParser: true });
+        console.log("INTERMEDIATE..");
+        var dbo = db.db("figmaDB");
+        console.log("HERE..");
+        try {
+            console.log("BEFORE");
+            const res = dbo.collection("users").update({userEmail: uEmail}, {$push: {teamIDs: team}});
+            console.log(res);
+            console.log("AFTER");
+            dbo.collection("users").updateOne(
+              {userEmail: uEmail},
+                {$setOnInsert: { teamIDs: [team]}}, {upsert: true});
+              
+
+            // dbo.collection("users").updateOne(
+            //     {_id: ObjectID(versionId), comments: {$exists: false}},  {$set: {comments: [comments]}},
+            // function(err, result){
+            //     console.log(result);
+            // });
+            //console.log(`res => ${JSON.stringify(res)}`);
+            //console.log(res);
+            return res;
+        }
+        catch (err) {
+            return err + "Error Query Failed";
+        }
+        finally {
+            db.close();
+        }
+    }
+    catch (err) {
+        return err + "Error DB connection failed";
+    }
+    
+}
+
+
 
 function getComments(versionId, callback){
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
@@ -359,14 +417,19 @@ function getUserTeams(uEmail, callback) {
 }
 
 function postAddUserTeams(uEmail, team, callback) {
+    console.log("HERE???");
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
-        dbo.collection("users").updateOne({userEmail: uEmail}, {$push: {teams: team}}, function(err, result) {
+        dbo.collection("users").updateOne({userEmail: uEmail}, {$addToSet: {teamIDs: team}}, function(err, result) {
             if (err) throw err;
             db.close();
         });
+
+         dbo.collection("users").updateOne(
+              {userEmail: uEmail},
+                {$setOnInsert: { teamIDs: [team]}}, {upsert: true});
     });
 }
 
@@ -433,6 +496,25 @@ app.get("/user", async function (req, res) {
     res.send(ret);
 });
 
+
+app.post("/postTeam", async function (req, res) {
+    req.on('data', async (chunk) => {
+        console.log(JSON.parse(chunk));
+        console.log("It t'was called");
+        // console.log(req);
+        let userInfo = await getUserAuth().catch(error => console.log(error));
+        let email = userInfo["email"];
+        console.log("BEFORE FUNCTION CALL...");
+        console.log(email);
+        console.log(JSON.parse(chunk)["team"]);
+        let result = await postAddUserTeams(email, JSON.parse(chunk)["team"], function(err, result){
+            console.log(result);
+            res.send(result);
+        });
+        console.log("AFTER FUNC");
+        // res.send(result);
+    });
+});
 app.post("/projectsbyid", async function (req, res){
     req.on('data', async (chunk) => {
         console.log("BY ID PROJECTS");

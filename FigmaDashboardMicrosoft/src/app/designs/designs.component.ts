@@ -5,6 +5,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import {HttpClient, HttpEventType, HttpHeaders, HttpRequest} from "@angular/common/http";
 import {HttpParams} from '@angular/common/http';
+import {Location} from '@angular/common';
 
 
 export interface Status{
@@ -66,7 +67,7 @@ export class DesignsComponent implements OnInit {
 	default: string = 'Pending Approval';
   constructor(private fb: FormBuilder,
   	private activatedRoute: ActivatedRoute, private http: HttpClient,
-      private router: Router) { }
+      private router: Router, private _location: Location) { }
   // @ViewChild('customInput') input: ElementRef;
 
    getFileImages(){
@@ -467,5 +468,18 @@ var counter = 0;
 	// 	this.style.backgroundColor = "#EB5757";
 	// }
  //  }
+
+  navigateHome(){
+     var queryParams = {code: this.code, state: this.state};
+    console.log("BEFORE..");
+      this.router.navigate(['/home'],     {   relativeTo: this.activatedRoute,
+queryParams: queryParams, queryParamsHandling: "merge" });
+  }
+
+
+  navigateProject(){
+    this._location.back();
+  }
+
 
 }

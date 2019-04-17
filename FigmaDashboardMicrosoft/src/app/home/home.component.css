@@ -14,12 +14,55 @@
 	background: rgba(0, 120, 215, 0.7);
 }
 
+
+.auth_field_add{
+	width: 191px;
+height: 32px;
+font-family: 'segoeui', 'Open Sans';
+font-size: 14px;
+color: rgba(0, 0, 0, 0.6);
+line-height: 20px;
+position: relative;
+left: 40%;
+
+}
+
+.teamname{
+	background: #F2F2F2;
+	font-family: 'segoeui', 'Open Sans';
+	font-size: 14px;
+	position: relative;
+	left: 43.5%;
+	width: 186px;
+	height: 32px;
+}
+
+.auth_field_button_add{
+	width: 216px;
+height: 32px;
+font-family: 'segoeui', 'Open Sans';
+font-size: 14px;
+background: #6FCF97;
+position: relative;
+left: 39%;
+top: 10px;
+}
+.auth_field_button_remove{
+	width: 216px;
+height: 32px;
+font-family: 'segoeui', 'Open Sans';
+font-size: 14px;
+background: rgba(0, 120, 215, 0.4);
+position: relative;
+left: 40%;
+top: 10px;
+}
 .auth_field{
 position:absolute;
 width: 216px;
 height: 32px;
 left: 600px;
-font-family: 'segoeui';
+font-family: 'segoeui', 'Open Sans';
 font-size: 14px;
 line-height: 20px;
 
@@ -68,7 +111,8 @@ color: rgba(0, 0, 0, 0.6);
 
 
 .all_features_panel{
-	top: 40px;
+	position: relative;
+	top: 70px;
 }
 .feature_panel{
 	position: relative;
