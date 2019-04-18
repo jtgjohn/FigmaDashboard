@@ -12,13 +12,13 @@ var teamID = '';
 const featureName = "Export Feature Dropdown";
 
 app.options('*', cors());
-
-AccessToken = "T8-l3zpJSUWMcaYAf5qZvWfYKeKwYHkCRP7ccouF";
+//AccessToken = "T8-l3zpJSUWMcaYAf5qZvWfYKeKwYHkCRP7ccouF";
+AccessToken = "";
 callback = "http://localhost:8080/contents.html";
 callback2 = "http://localhost:4200/home";
 
 async function OAuthGetToken(code){
-    let result = await fetch('https://www.figma.com/api/oauth/token', {
+    var result = await fetch('https://www.figma.com/api/oauth/token', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -39,8 +39,9 @@ async function OAuthGetToken(code){
 //OAuth
 //=====================================================================================
 async function getUserAuth(){
-
-    let result = await fetch('https://api.figma.com/v1/me/', {
+    console.log("ACCESS TOKEN");
+    console.log(AccessToken);
+    var result = await fetch('https://api.figma.com/v1/me/', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + AccessToken
@@ -62,7 +63,7 @@ async function getUserAuth(){
 // }
 
 async function getTeamProjectsAuth(teamId){
-    let result = await fetch('https://api.figma.com/v1/teams/' + teamId + "/projects", {
+    var result = await fetch('https://api.figma.com/v1/teams/' + teamId + "/projects", {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + AccessToken
@@ -81,7 +82,7 @@ async function getTeamProjectsAuth(teamId){
 }
 
 async function getProjectFilesAuth(projectId){
-    let result = await fetch('https://api.figma.com/v1/projects/' + projectId + "/files", {
+    var result = await fetch('https://api.figma.com/v1/projects/' + projectId + "/files", {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + AccessToken
@@ -94,7 +95,7 @@ async function getProjectFilesAuth(projectId){
 }
 
 async function getFileAuth(fileId){
-    let result = await fetch('https://api.figma.com/v1/files/' + fileId, {
+    var result = await fetch('https://api.figma.com/v1/files/' + fileId, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + AccessToken
@@ -107,7 +108,7 @@ async function getFileAuth(fileId){
 }
 
 async function getFileImagesAuth(fileId, ids){
-    let result = await fetch('https://api.figma.com/v1/images/' + fileId + "?ids=" + ids, {
+    var result = await fetch('https://api.figma.com/v1/images/' + fileId + "?ids=" + ids, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + AccessToken
@@ -124,8 +125,8 @@ async function getFileImagesAuth(fileId, ids){
 //=====================================================================================
 
 async function getUser(){
-    //let result = await fetch('https://api.figma.com/v1/me/' + fileId , {
-    let result = await fetch('https://api.figma.com/v1/me/', {
+    //var result = await fetch('https://api.figma.com/v1/me/' + fileId , {
+    var result = await fetch('https://api.figma.com/v1/me/', {
         method: 'GET',
         headers: {
             'X-Figma-Token': APIKey
@@ -138,7 +139,7 @@ async function getUser(){
 }
 
 async function getTeamProjects(teamId){
-    let result = await fetch('https://api.figma.com/v1/teams/' + teamId + "/projects", {
+    var result = await fetch('https://api.figma.com/v1/teams/' + teamId + "/projects", {
         method: 'GET',
         headers: {
             'X-Figma-Token': APIKey
@@ -151,7 +152,7 @@ async function getTeamProjects(teamId){
 }
 
 async function getProjectFiles(projectId){
-    let result = await fetch('https://api.figma.com/v1/projects/' + projectId + "/files", {
+    var result = await fetch('https://api.figma.com/v1/projects/' + projectId + "/files", {
         method: 'GET',
         headers: {
             'X-Figma-Token': APIKey
@@ -164,7 +165,7 @@ async function getProjectFiles(projectId){
 }
 
 async function getFile(fileId){
-    let result = await fetch('https://api.figma.com/v1/files/' + fileId, {
+    var result = await fetch('https://api.figma.com/v1/files/' + fileId, {
         method: 'GET',
         headers: {
             'X-Figma-Token': APIKey
@@ -177,7 +178,7 @@ async function getFile(fileId){
 }
 
 async function getFileImages(fileId, ids){
-    let result = await fetch('https://api.figma.com/v1/images/' + fileId + "?ids=" + ids, {
+    var result = await fetch('https://api.figma.com/v1/images/' + fileId + "?ids=" + ids, {
         method: 'GET',
         headers: {
             'X-Figma-Token': APIKey
@@ -410,13 +411,20 @@ function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoE
 }
 
 function getUserTeams(uEmail, callback) {
+    console.log("getUserTeams..");
+    console.log(uEmail);
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
         dbo.collection("users").findOne({userEmail: uEmail}, function(err, result) {
             if (err) callback(err, null);
-            else callback(null, result);
+
+            else {
+                console.log("RESULT");
+                console.log(result);
+                callback(null, result);
+            }
             db.close();
         });
     });
@@ -564,7 +572,7 @@ app.get("/contents.html", async function (req, res) {
 
 //user
 app.get("/user", async function (req, res) {
-    let result = await getUserAuth().catch(error => console.log(error));
+    var result = await getUserAuth().catch(error => console.log(error));
     //console.log(JSON.stringify(result));
     let ret = "<html>";
     ret += "<body>";
@@ -578,21 +586,32 @@ app.get("/user", async function (req, res) {
 });
 
 
-app.get("/getUserTeams", async function (req, res) {
-    let result = await getUserAuth().catch(error => console.log(error));
-    console.log(JSON.stringify(result));
-    let result_second = await getUserTeams(result["email"], function(err, result){
-        console.log(result);
-        res.send(result);
+app.post("/getUserTeams", async function (req, res) {
+    req.on('data', async (chunk) => {
+        
+    console.log("ACCESS TOKEN TEST.");
+        var resulttmp = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        console.log(resulttmp);
+        AccessToken = resulttmp["access_token"];
+        console.log(AccessToken);
+        
+         console.log("GET USER TEAMS..");
+        var result = await getUserAuth().catch(error => console.log(error));
+        console.log("BEFORE RESULT..");
+        console.log(JSON.stringify(result));
+        var result_second = await getUserTeams(result["email"], function(err, result){
+            console.log(result);
+            res.send(result);
+        });
     });
     
 });
 
 app.post("/removeTeam", async function (req, res){
      req.on('data', async (chunk) => {
-          let result = await getUserAuth().catch(error => console.log(error));
+          var result = await getUserAuth().catch(error => console.log(error));
             console.log(JSON.stringify(result));
-            let result_second = await postRemoveUserTeams(result["email"], JSON.parse(chunk)["team"], function(err, result){
+            var result_second = await postRemoveUserTeams(result["email"], JSON.parse(chunk)["team"], function(err, result){
                 console.log(result);
                 res.end(result);
             });
@@ -610,7 +629,7 @@ app.post("/postTeam", async function (req, res) {
         console.log("BEFORE FUNCTION CALL...");
         console.log(email);
         console.log(JSON.parse(chunk)["team"]);
-        let result = await postAddUserTeams(email, JSON.parse(chunk)["team"], function(err, result){
+        var result = await postAddUserTeams(email, JSON.parse(chunk)["team"], function(err, result){
             console.log(result);
             res.send(result);
         });
@@ -639,12 +658,14 @@ app.post("/projectsbyid", async function (req, res){
             res.send(JSON.stringify(featuresFiles));
         }
 
-        let result2 = await getProjectFilesAuth(pid).catch(error => console.log(error));
+
+        var result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
+
 
 
         for(var i = 0; i < result2["files"].length; ++i){
             console.log("Hello");
-            let result3 = await getFileAuth(result2["files"][i]["key"]).catch(error => console.log(error));
+            var result3 = await getFileAuth(result2["files"][i]["key"]).catch(error => console.log(error));
             // console.log("RESULT3 %j", result3);
             result2["files"][i]["thumbnailUrl"] = result3["thumbnailUrl"];
             result2["files"][i]["projectId"] = pid;
@@ -776,14 +797,21 @@ app.post("/teamProjectsall", async function (req, res) {
             let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             AccessToken = result["access_token"];
         }
-        let result2 = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
 
-        let result3 = "";
+        var result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        console.log(result);
+        AccessToken = result["access_token"];
+        console.log(AccessToken);
+       
+        var result2 = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+        console.log(JSON.stringify(result2));
+        var result3 = "";
+
         var all_project_files = [];
 
         for(var i = 0; i < result2["projects"].length; ++i){
              result3 = await getProjectFilesAuth(result2["projects"][i]["id"]).catch(error => console.log(error));
-             let resultimagefinal = await getFileAuth(result3["files"][0]["key"]).catch(error => console.log(error));
+             var resultimagefinal = await getFileAuth(result3["files"][0]["key"]).catch(error => console.log(error));
 
              result3["id"] = result2["projects"][i]["id"];
              result3["name"] = result2["projects"][i]["name"];
@@ -810,7 +838,7 @@ app.post("/teamProjectsall", async function (req, res) {
 
 //team projects
 app.get("/teamProjects", async function (req, res) {
-    let result = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
+    var result = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
 
     res.send(JSON.stringify(result));
 });
@@ -818,7 +846,7 @@ app.get("/teamProjects", async function (req, res) {
 //project files
 app.get("/projectFiles", async function (req, res) {
     let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
-    let result = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
+    var result = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
 
     res.send(JSON.stringify(result));
 });
@@ -827,7 +855,7 @@ app.get("/projectFiles", async function (req, res) {
 app.get("/file", async function (req, res) {
     let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
     let files = await getProjectFilesAuth(projects["projects"][0]["id"]).catch(error => console.log(error));
-    let result = await getFileAuth(files["files"][0]["key"]).catch(error => console.log(error));
+    var result = await getFileAuth(files["files"][0]["key"]).catch(error => console.log(error));
 
     let ret = "<html>";
     ret += "<body>";
@@ -902,19 +930,19 @@ app.post("/fileImagebyFeature", async function (req, res) {
     req.on('data', async (chunk) => {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
-        if(AccessToken == ""){
-            let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-            console.log(result);
-            AccessToken = result["access_token"];
-            console.log(AccessToken);
-        }
+    
+        var result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        console.log(result);
+        AccessToken = result["access_token"];
+        console.log(AccessToken);
+        
         let file = await getFileAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
         console.log(file);
         console.log("intermediate");
 
         let picID = findID(file["document"], featureName);
         console.log(picID);
-        let result = await getFileImagesAuth(JSON.parse(chunk)["id"], picID).catch(error => console.log(error));
+        var result = await getFileImagesAuth(JSON.parse(chunk)["id"], picID).catch(error => console.log(error));
         result["lastModified"] = file["lastModified"];
         console.log(result);
         res.send(JSON.stringify(result));
@@ -929,7 +957,7 @@ app.get("/fileImage", async function (req, res) {
 
     //let projects = await getTeamProjects(teamID).catch(error => console.log(error));
     //let files = await getProjectFiles(projects["projects"][0]["id"]).catch(error => console.log(error));
-    //let result = await getFileImages(files["files"][0]["key"], featureID).catch(error => console.log(error));
+    //var result = await getFileImages(files["files"][0]["key"], featureID).catch(error => console.log(error));
 
     let projects = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
     //console.log(projects);
@@ -960,8 +988,8 @@ app.get("/fileImage", async function (req, res) {
     console.log(picID);
     */
 
-    //let result = await getFileImagesAuth(files["files"][0]["key"], featureID).catch(error => console.log(error));
-    let result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
+    //var result = await getFileImagesAuth(files["files"][0]["key"], featureID).catch(error => console.log(error));
+    var result = await getFileImagesAuth(files["files"][0]["key"], picID).catch(error => console.log(error));
     //console.log(result);
 
 
