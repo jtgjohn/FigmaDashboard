@@ -121,6 +121,12 @@ export class DesignsComponent implements OnInit {
   }
   togglecomments(id){
   	this.commentson[id] = !this.commentson[id];
+    var total_view = "view" + id;
+    if(this.commentson[id]){
+      document.getElementById(total_view).innerHTML = "Hide Comments";
+    }else{
+       document.getElementById(total_view).innerHTML = "View Comments";
+    }
   }
   getVersions(){
   	 var datax; 
@@ -401,6 +407,11 @@ var counter = 0;
   addnewversion(){
   	this.panelvisible = !this.panelvisible;
   	 var status = "";
+     if(this.panelvisible){
+       document.getElementById("top_button").innerHTML = "Add New Version(Collapse)";
+     }else{
+       document.getElementById("top_button").innerHTML = "Add New Version";
+     }
 
     if(this.colorversion === "#F2C94C"){
 		status = "Request Approval";
