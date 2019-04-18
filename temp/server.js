@@ -39,7 +39,8 @@ async function OAuthGetToken(code){
 //OAuth
 //=====================================================================================
 async function getUserAuth(){
-
+    console.log("ACCESS TOKEN");
+    console.log(AccessToken);
     let result = await fetch('https://api.figma.com/v1/me/', {
         method: 'GET',
         headers: {
@@ -410,13 +411,20 @@ function postVersionInfo(info, fid, imagePath, frameChanged, whatisnew, readytoE
 }
 
 function getUserTeams(uEmail, callback) {
+    console.log("getUserTeams..");
+    console.log(uEmail);
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
 
         dbo.collection("users").findOne({userEmail: uEmail}, function(err, result) {
             if (err) callback(err, null);
-            else callback(null, result);
+
+            else {
+                console.log("RESULT");
+                console.log(result);
+                callback(null, result);
+            }
             db.close();
         });
     });
@@ -516,12 +524,23 @@ app.get("/user", async function (req, res) {
 });
 
 
-app.get("/getUserTeams", async function (req, res) {
-    let result = await getUserAuth().catch(error => console.log(error));
-    console.log(JSON.stringify(result));
-    let result_second = await getUserTeams(result["email"], function(err, result){
-        console.log(result);
-        res.send(result);
+app.post("/getUserTeams", async function (req, res) {
+    req.on('data', async (chunk) => {
+        if(AccessToken == ""){
+            console.log("ACCESS TOKEN TEST.");
+                let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+                console.log(result);
+                AccessToken = result["access_token"];
+                console.log(AccessToken);
+         }
+         console.log("GET USER TEAMS..");
+        let result = await getUserAuth().catch(error => console.log(error));
+        console.log("BEFORE RESULT..");
+        console.log(JSON.stringify(result));
+        let result_second = await getUserTeams(result["email"], function(err, result){
+            console.log(result);
+            res.send(result);
+        });
     });
     
 });

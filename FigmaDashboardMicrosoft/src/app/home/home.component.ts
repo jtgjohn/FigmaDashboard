@@ -199,7 +199,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  loadTeams(){
+  loadTeams(code: string){
      var datax;
      var teamid;
     const headers = new HttpHeaders({
@@ -210,9 +210,14 @@ export class HomeComponent implements OnInit {
     // console.log("DATA: " + data);
     // console.log("HEADERS: " + headers);
     //make a cross origin POST request for user timeline info.
-    return this.http.get('http://127.0.0.1:8080/getUserTeams',  {
+
+    return this.http.post('http://127.0.0.1:8080/getUserTeams', JSON.stringify({"code": code}), {
       headers: headers
     });
+
+    // return this.http.get('http://127.0.0.1:8080/getUserTeams',  {
+    //   headers: headers
+    // });
   }
   ngOnInit() {
   	this.code = "";
@@ -220,18 +225,19 @@ export class HomeComponent implements OnInit {
         console.log(params);
         this.code = params["code"];
         this.state = params["state"];
+        this.loadTeams(this.code)
+
+        .subscribe((res:any) => {
+          console.log(res);
+          for(var i = 0; i < res["teamIDs"].length; ++i){
+            this.status_values.push(res["teamIDs"][i]);
+          }
+        }, (err) => {
+          console.log(err);
+        });
     });
 
-    this.loadTeams()
-
-    .subscribe((res:any) => {
-      console.log(res);
-      for(var i = 0; i < res["teamIDs"].length; ++i){
-        this.status_values.push(res["teamIDs"][i]);
-      }
-    }, (err) => {
-      console.log(err);
-    });
+    
 
     // this.getProjects(this.code)
 
