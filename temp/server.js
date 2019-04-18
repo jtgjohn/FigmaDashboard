@@ -687,7 +687,7 @@ app.post("/teamProjectsall", async function (req, res) {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
         teamID = JSON.parse(chunk)["teamid"];
-        if(AccessToken == ""){
+        if(AccessToken === ""){
             let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             console.log(result);
             AccessToken = result["access_token"];
@@ -833,7 +833,7 @@ app.post("/fileImagebyFeature", async function (req, res) {
     req.on('data', async (chunk) => {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
-        if(AccessToken == ""){
+        if(AccessToken === ""){
             let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
             console.log(result);
             AccessToken = result["access_token"];
