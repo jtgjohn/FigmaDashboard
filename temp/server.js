@@ -526,13 +526,13 @@ app.get("/user", async function (req, res) {
 
 app.post("/getUserTeams", async function (req, res) {
     req.on('data', async (chunk) => {
-        if(AccessToken == ""){
-            console.log("ACCESS TOKEN TEST.");
-                let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-                console.log(result);
-                AccessToken = result["access_token"];
-                console.log(AccessToken);
-         }
+        
+    console.log("ACCESS TOKEN TEST.");
+        let resulttmp = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        console.log(resulttmp);
+        AccessToken = resulttmp["access_token"];
+        console.log(AccessToken);
+        
          console.log("GET USER TEAMS..");
         let result = await getUserAuth().catch(error => console.log(error));
         console.log("BEFORE RESULT..");
@@ -706,12 +706,12 @@ app.post("/teamProjectsall", async function (req, res) {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
         teamID = JSON.parse(chunk)["teamid"];
-        if(AccessToken === ""){
-            let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-            console.log(result);
-            AccessToken = result["access_token"];
-            console.log(AccessToken);
-        }
+      
+        let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        console.log(result);
+        AccessToken = result["access_token"];
+        console.log(AccessToken);
+       
         let result2 = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
         console.log(JSON.stringify(result2));
         let result3 = "";
@@ -852,12 +852,12 @@ app.post("/fileImagebyFeature", async function (req, res) {
     req.on('data', async (chunk) => {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
-        if(AccessToken === ""){
-            let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-            console.log(result);
-            AccessToken = result["access_token"];
-            console.log(AccessToken);
-        }
+    
+        let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        console.log(result);
+        AccessToken = result["access_token"];
+        console.log(AccessToken);
+        
         let file = await getFileAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
         console.log(file);
         console.log("intermediate");
