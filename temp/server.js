@@ -12,8 +12,8 @@ var teamID = '';
 const featureName = "Export Feature Dropdown";
 
 app.options('*', cors());
-
-AccessToken = "T8-l3zpJSUWMcaYAf5qZvWfYKeKwYHkCRP7ccouF";
+//AccessToken = "T8-l3zpJSUWMcaYAf5qZvWfYKeKwYHkCRP7ccouF";
+AccessToken = "";
 callback = "http://localhost:8080/contents.html";
 callback2 = "http://localhost:4200/home";
 

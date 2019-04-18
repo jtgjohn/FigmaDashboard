@@ -24,7 +24,7 @@
 
 <select class = "teamnameretrieve" id = "display_proj" (change)="onChangeTeam($event)">
 
-			  <option value="#F2F2F2"  [selected] = "true"> Team Name </option>
+			  <option value="#F2F2F2"  [selected] = "true"> Select Team to View Projects </option>
 
 			   <option *ngFor="let status_item of status_values">
 			    {{status_item}}
@@ -35,7 +35,7 @@
 <input  class = "auth_field_add" placeholder="TeamID" id= "add_team_input" name="teamid" type = "text" />
 <select class = "teamname" id = "remove_team_input"  >
 
-			  <option value="#F2F2F2"  [selected] = "true"> Team Name </option>
+			  <option value="#F2F2F2"  [selected] = "true"> Select Team to Remove </option>
 
 			   <option *ngFor="let status_item of status_values">
 			    {{status_item}}
