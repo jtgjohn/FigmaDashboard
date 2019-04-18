@@ -707,10 +707,10 @@ app.post("/teamProjectsall", async function (req, res) {
         console.log(JSON.parse(chunk));
         teamID = JSON.parse(chunk)["teamid"];
       
-        var result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-        console.log(result);
-        AccessToken = result["access_token"];
-        console.log(AccessToken);
+        // var result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        // console.log(result);
+        // AccessToken = result["access_token"];
+        // console.log(AccessToken);
        
         var result2 = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
         console.log(JSON.stringify(result2));
