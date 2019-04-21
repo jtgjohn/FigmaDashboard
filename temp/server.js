@@ -476,6 +476,68 @@ function postRemoveUserTeams(uEmail, team, callback) {
     });
 }
 
+function postCacheProjects(data) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+        const collection = dbo.collection("projects");
+        collection.updateOne({id: data["id"], teamid: data["teamid"]}, {$set: data}, {upsert:true}, function(err, result) {
+            if (err) throw err;
+            db.close();
+        });
+
+       
+    });
+}
+
+async function getProjectsByTeamId(nteamid){
+    try {
+        let db = await mongo.connect(mongo_url, {useNewUrlParser: true});
+
+        var dbo = db.db("figmaDB");
+
+        try {
+            let res = await dbo.collection("projects").find({teamid: nteamid}).toArray();
+
+            return res;
+        }
+        catch (err) {return err + "Query failed";}
+        finally { db.close(); }
+    }
+    catch (err) {return err + "Failled to connect to db"; }
+}
+
+function postCacheFeatures(data) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+        const collection = dbo.collection("features");
+        collection.updateOne({key: data["key"], projectId: data["projectId"]}, {$set: data}, {upsert:true}, function(err, result) {
+            if (err) throw err;
+            db.close();
+        });
+    });
+}
+
+async function getFeaturesByProjectId(pid){
+    try {
+        let db = await mongo.connect(mongo_url, {useNewUrlParser: true});
+
+        var dbo = db.db("figmaDB");
+
+        try {
+            let res = await dbo.collection("features").find({projectId: pid}).toArray();
+
+            return res;
+        }
+        catch (err) {return err + "Query failed";}
+        finally { db.close(); }
+    }
+    catch (err) {return err + "Failled to connect to db"; }
+}
+
+
+
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
@@ -528,10 +590,12 @@ app.post("/getUserTeams", async function (req, res) {
     req.on('data', async (chunk) => {
         
     console.log("ACCESS TOKEN TEST.");
+    if(AccessToken == ""){
         var resulttmp = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
         console.log(resulttmp);
         AccessToken = resulttmp["access_token"];
         console.log(AccessToken);
+    }
         
          console.log("GET USER TEAMS..");
         var result = await getUserAuth().catch(error => console.log(error));
@@ -578,10 +642,27 @@ app.post("/postTeam", async function (req, res) {
 app.post("/projectsbyid", async function (req, res){
     req.on('data', async (chunk) => {
         console.log("BY ID PROJECTS");
-        // var result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-        // console.log(result);
-        // AccessToken = result["access_token"];
+
+        const pid = JSON.parse(chunk)["id"];
+
+        let cachedFeatures = await getFeaturesByProjectId(pid);
+
+        var foundFeatures = (cachedFeatures.length >  0);
+
+        if (foundFeatures) {
+            var featuresFiles = {
+                files: []
+            }
+            for (var i = 0; i < cachedFeatures.length; i++) {
+                featuresFiles["files"].push(cachedFeatures[i]);
+            }
+
+            res.send(JSON.stringify(featuresFiles));
+        }
+
+
         var result2 = await getProjectFilesAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
+
 
 
         for(var i = 0; i < result2["files"].length; ++i){
@@ -589,13 +670,13 @@ app.post("/projectsbyid", async function (req, res){
             var result3 = await getFileAuth(result2["files"][i]["key"]).catch(error => console.log(error));
             // console.log("RESULT3 %j", result3);
             result2["files"][i]["thumbnailUrl"] = result3["thumbnailUrl"];
+            result2["files"][i]["projectId"] = pid;
+            postCacheFeatures(result2["files"][i]);
         }
 
-        console.log("RESULT2");
-
-        console.log(result2);
-
-        res.send(JSON.stringify(result2));
+        if (!foundFeatures) {
+            res.send(JSON.stringify(result2));
+        }
 
     });
 });
@@ -703,53 +784,54 @@ app.post("/addversion", async function (req, res){
 //team projects
 app.post("/teamProjectsall", async function (req, res) {
     req.on('data', async (chunk) => {
-        console.log(req["query"]);
-        console.log(JSON.parse(chunk));
         teamID = JSON.parse(chunk)["teamid"];
-      
+
+
+        let cachedProjects = await getProjectsByTeamId(teamID);
+
+        var foundProjects = (cachedProjects.length > 0);
+        if (foundProjects) {
+            console.log(cachedProjects.length);
+            console.log("found that many projects");
+            res.send(JSON.stringify(cachedProjects));
+        }
+
+        // if(AccessToken == ""){
+        //     let result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+        //     AccessToken = result["access_token"];
+        // }
+
         // var result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
         // console.log(result);
         // AccessToken = result["access_token"];
         // console.log(AccessToken);
+// >>>>>>> 3e30fdf5032b24220d19da3b135a43838d7d3196
        
         var result2 = await getTeamProjectsAuth(teamID).catch(error => console.log(error));
         console.log(JSON.stringify(result2));
         var result3 = "";
+
         var all_project_files = [];
 
-        let ret = "<ng-container>";
         for(var i = 0; i < result2["projects"].length; ++i){
-
-
-
              result3 = await getProjectFilesAuth(result2["projects"][i]["id"]).catch(error => console.log(error));
              var resultimagefinal = await getFileAuth(result3["files"][0]["key"]).catch(error => console.log(error));
 
              result3["id"] = result2["projects"][i]["id"];
              result3["name"] = result2["projects"][i]["name"];
              result3["thumbnailUrl"] = resultimagefinal["thumbnailUrl"];
-              ret += "<div class = 'feature_panel' >";
-              ret += "<label for = 'featurelabel' class = 'feature_label'>";
-              ret += result3["name"];
-              ret += "</label>";
-              ret += "<p class = 'feature_paragraph'>";
-              ret += "Last Modified: " + result3["files"][0]["last_modified"];
-              ret += "</p>";
-              ret += "<div class = 'project_image'>";
-              ret += "<img src = '";
-              ret += resultimagefinal["thumbnailUrl"] + "'/>";
-              ret += "</div>";
-              ret += "<button class = 'feature_button'> View Features </button>";
+             result3["teamid"] = teamID;
 
-             console.log(result3);
              all_project_files.push(result3);
+             postCacheProjects(result3);
         }
 
-        ret+= "</ng-container>";
+        if (!foundProjects) {
+            console.log("sending from the api");
+            res.send(JSON.stringify(all_project_files));
+        }
 
-        console.log(ret);
-        // res.send(ret);
-        res.send(JSON.stringify(all_project_files));
+
 
 
     });
@@ -853,10 +935,14 @@ app.post("/fileImagebyFeature", async function (req, res) {
         console.log(req["query"]);
         console.log(JSON.parse(chunk));
     
-        var result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
-        console.log(result);
-        AccessToken = result["access_token"];
-        console.log(AccessToken);
+
+
+        if(AccessToken == ""){
+            var result = await OAuthGetToken(JSON.parse(chunk)["code"]).catch(error => console.log(error));
+            console.log(result);
+            AccessToken = result["access_token"];
+            console.log(AccessToken);
+        }
         
         let file = await getFileAuth(JSON.parse(chunk)["id"]).catch(error => console.log(error));
         console.log(file);

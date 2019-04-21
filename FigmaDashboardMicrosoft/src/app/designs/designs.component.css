@@ -175,10 +175,9 @@ font-family: 'segoeui', 'Open Sans';
 
 }
 .feature_panel{
-
 	position: relative;
 	width: 90%;
-	height: 700px;
+	height: max-content;
 	left: 5%;
 
 
@@ -356,11 +355,11 @@ background-color: #F2C94C;
 	font-size: 14px;
 }
 .project_image{
-	position: absolute;
-	width: 337px;
-	height: 195px;
-	left: 700px;
-	top: 50px;
+	    position: relative;
+    width: 337px;
+    height: 195px;
+    left: 1200px;
+    bottom: 200px;
 
 }
 
