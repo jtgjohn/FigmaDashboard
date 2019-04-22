@@ -284,6 +284,12 @@ font-family: 'segoeui', 'Open Sans';
 
 }
 
+.icontmp{
+	position: relative;
+	left: 1420px;
+	float: right;
+}
+
 .feature_label{
 	position: relative;
 	height: 48px;
