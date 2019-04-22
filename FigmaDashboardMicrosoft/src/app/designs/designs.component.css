@@ -137,12 +137,12 @@ font-family: 'segoeui', 'Open Sans';
 }
 
 .whatsnew{
-	position: relative;
-width: 380px;
-height: 32px;
-right: 230px;
-top: 75px;
-font-family: 'segoeui', 'Open Sans';
+    position: absolute;
+    width: 380px;
+    height: 32px;
+    top: 75px;
+    left: 45px;
+    font-family: 'segoeui', 'Open Sans';
 }
 
 
@@ -160,12 +160,12 @@ font-family: 'segoeui', 'Open Sans';
 }
 
 .readyexports{
-	font-family: 'segoeui', 'Open Sans';
-	font-size: 18px;
-	line-height: normal;
-	top: 175px;
-	right: 145px;
-	position: relative;
+	    font-family: 'segoeui', 'Open Sans';
+    font-size: 18px;
+    line-height: normal;
+    top: 200px;
+    left: 45px;
+    position: absolute;
 }
 
 
@@ -175,15 +175,16 @@ font-family: 'segoeui', 'Open Sans';
 }
 
 .export_button_version_add{
-	background-color: #F2F2F2;
-	font-family: 'segoeui',  'Open Sans';
-	font-size: 14px;
-	width: 216px;
-	height: 32px;
-	top: 250px;
-	left: 350px;
-	position: relative;
+	    background-color: #F2F2F2;
+    font-family: 'segoeui', 'Open Sans';
+    font-size: 14px;
+    width: 216px;
+    height: 32px;
+    top: 290px;
+    left: 45px;
+    position: absolute;
 }
+
 
 .gearicon{
 	left: 710px;
@@ -316,28 +317,27 @@ font-family: 'segoeui', 'Open Sans';
 
 
 .reviewer_dropdown_version{
-	position: relative;
-	right: 600px;
-	top: 140px;
-	font-family: 'segoeui', 'Open Sans';
-	width: 224px;
-	height: 32px;
-	text-align: center;
-	font-size: 14px;
-	line-height: 20px;
-	background-color: #F2C94C;
+	    position: absolute;
+    top: 150px;
+    font-family: 'segoeui', 'Open Sans';
+    width: 224px;
+    height: 32px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    background-color: #F2C94C;
 }
 .approval_dropdown_version{
-	position: relative;
-	right: 610px;
-	top: 140px;
-	bottom: 188px;
-	font-family: 'segoeui',  'Open Sans';
-	width: 224px;
-	height: 32px;
-	text-align: center;
-	font-size: 14px;
-	line-height: 20px;
+	position: absolute;
+    left: 45px;
+    top: 150px;
+    bottom: 188px;
+    font-family: 'segoeui', 'Open Sans';
+    width: 224px;
+    height: 32px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
 	background-color: #F2C94C;
 }
 
@@ -428,13 +428,20 @@ background-color: #F2C94C;
 	font-size: 14px;
 }
 .project_image{
+	     position: relative;
+    width: 337px;
+    height: 195px;
+    left: 900px;
+    bottom: 200px;
+}
+
+.project_image_init{
 	    position: relative;
     width: 337px;
     height: 195px;
-    left: 1200px;
-    bottom: 200px;
-
+    left: 650px;
 }
+
 
 img {
     max-width: 100%;
