@@ -42,7 +42,8 @@ export class DesignsComponent implements OnInit {
 	colorversionreview = "";
 	changeworthy:boolean = false;
 	panelvisible:boolean = false;
-
+  public width: Number;
+  public left: Number;
 	 id = "";
   
   	code:string = "";
@@ -150,6 +151,8 @@ export class DesignsComponent implements OnInit {
   ngOnInit() {
 
 
+
+
   	this.statusForm = this.fb.group({
 	  statusControl: [this.statuses[0]]
 	});
@@ -171,6 +174,27 @@ export class DesignsComponent implements OnInit {
         this.feature_name = params["feature_name"];
           	document.getElementById("featuretitle").innerHTML = this.feature_name;
           	document.getElementById("projecttitle").innerHTML = this.project_name;
+            // while(document.getElementById('list_project_title').style.width === ""){
+               
+            //   }
+
+
+            var newDiv = document.createElement("SPAN"); 
+  // and give it some content 
+  var newContent = document.createTextNode(this.project_name); 
+  // add the text node to the newly created div
+  newDiv.appendChild(newContent);  
+              // this.width = newDiv.clientWidth;
+                console.log(this.width);
+
+               console.log(document.getElementById('list_project_title').style.width);
+
+
+            // document.getElementById("sec_arr").style.position = "relative";
+            // document.getElementById("sec_arr").style.left = document.getElementById("list_project_title").style.width;
+           //   console.log(document.getElementById('projecttitle').style);
+           // document.getElementById('secondarrow').style.left = 64.31 + document.getElementById('projecttitle').style.width;
+           // console.log(document.getElementById('secondarrow').style);
 
     });
 
@@ -293,6 +317,9 @@ var counter = 0;
   // 	 (<HTMLSelectElement>document.getElementById("1sel")).value = "Pending Approval";
   // 	 (<HTMLSelectElement>document.getElementById("2sel")).value = "Pending Approval";
    console.log(this.comments);
+
+  
+
   }
 
 
