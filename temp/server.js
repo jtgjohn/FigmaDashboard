@@ -751,7 +751,12 @@ app.post("/updatestatus", async function (req, res){
         dbo.collection("versions").updateOne({_id: ObjectID(JSON.parse(chunk)["versionId"])}, {$set: {status: JSON.parse(chunk)["status"]}}, function(err, result) {
             console.log("VERS");
             console.log(result);
-            if (err) throw err;
+            if (err){ 
+                throw err;
+            }
+            else{
+                res.send({"lastChanger": user_handle, "lastChangetime": actual_time_format});
+            }
             db.close();
         });
        
