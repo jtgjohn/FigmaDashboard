@@ -698,11 +698,56 @@ app.post("/getcomments", async function (req, res){
 
 app.post("/updatestatus", async function (req, res){
     req.on('data', async (chunk) => {
+
+        var user = await getUserAuth();
+         console.log("USER");
+          console.log(user);
+
+         var user_handle = user["handle"];
+         var user_email = user["email"];
+
+          var moment = require('moment-timezone');
+        var tz_s = moment.tz.guess();
+        // var curr = now + tz_s;
+        // console.log("TOTAL");
+        // console.log(curr);
+
+
+        var actual_time_final = moment().tz(tz_s);
+
+        var actual_time_format = actual_time_final.format('MMMM Do YYYY, h:mm:ss a z');
+        console.log("ACTUAL TIME FINAL..");
+        console.log(actual_time_final);
+
           mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
         var dbo = db.db("figmaDB");
         console.log(JSON.parse(chunk));
+
+         dbo.collection("versions").updateOne({_id: ObjectID(JSON.parse(chunk)["versionId"])}, {$set: {lastChanger: user_handle, lastChangetime: actual_time_format }}, function(err, result) {
+            // console.log(result);
+            if (err) {
+                console.log("ERROR");
+                throw err;
+            }else{
+                 console.log(result);
+            }
+            db.close();
+        });
+
+
+
+          dbo.collection("versions").updateOne({_id: ObjectID(JSON.parse(chunk)["versionId"]), lastChanger: {$exists: false}},  {$set: {lastChanger: user_handle}},
+            function(err, result){
+                console.log(result);
+        });
+
+           dbo.collection("versions").updateOne({_id: ObjectID(JSON.parse(chunk)["versionId"]), lastChangetime: {$exists: false}},  {$set: {lastChangetime: actual_time_format}},
+            function(err, result){
+                console.log(result);
+        });
        
+
         dbo.collection("versions").updateOne({_id: ObjectID(JSON.parse(chunk)["versionId"])}, {$set: {status: JSON.parse(chunk)["status"]}}, function(err, result) {
             console.log("VERS");
             console.log(result);

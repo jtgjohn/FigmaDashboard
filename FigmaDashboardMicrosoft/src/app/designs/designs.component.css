@@ -402,7 +402,7 @@ background-color: #F2C94C;
 
 
 .feature_paragraph{
-
+	white-space: nowrap;
 	position: relative;
 	width: 489px;
 	height: 40px;

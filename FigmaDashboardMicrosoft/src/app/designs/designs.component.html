@@ -160,11 +160,21 @@
 		</label>
 
 		<p class = "feature_paragraph">
-			Last Modified: {{pr.last_modified}}
+			Created: {{pr.last_modified}}
 
 
 		</p>
 
+
+		<p class = "feature_paragraph" *ngIf = "pr.last_approved !== ''">
+			Status Last Changed By: {{pr.approver}} at: {{pr.last_approved}}
+
+
+		</p>
+		<br/>
+		<br/>
+
+	
 		<button class = "comments_options" (click) = "togglecomments(pr.id)" id = "{{'view' + pr.id }}">
 		  View Comments
 		</button>

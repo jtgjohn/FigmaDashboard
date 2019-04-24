@@ -19,6 +19,8 @@ export interface Design{
   title:string,
   thumbnail_url: string,
   last_modified: string,
+  approver: string,
+  last_approved: string,
   id: number
   status: string,
   version_id: string
@@ -264,6 +266,14 @@ var counter = 0;
 			var curr_comments = [];
           console.log(res[i]);
  
+          if("lastChanger" in res[i]){
+            proj.approver = res[i]["lastChanger"];
+            proj.last_approved = res[i]["lastChangetime"];
+
+          }else{
+            proj.approver = "";
+            proj.last_approved = "";
+          }
          	if("comments" in res[i]){
              console.log("HERE");
              for(var x = 0; x < res[i]["comments"].length; ++x){
@@ -467,6 +477,8 @@ var counter = 0;
          proj.last_modified = res["timestamp"];
          proj.id = 0;
          proj.status = res["status"];
+         proj.last_approved = "";
+         proj.approver = "";
          proj.version_id = res["_id"];
          for(var x = 0; x < this.designs.length; ++x){
            this.designs[x].id++;
