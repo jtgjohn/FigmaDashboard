@@ -655,6 +655,21 @@ app.post("/projectsbyid", async function (req, res){
             }
             for (var i = 0; i < cachedFeatures.length; i++) {
                 featuresFiles["files"].push(cachedFeatures[i]);
+                //  var moment = require('moment-timezone');
+                // var tz_s = moment.tz.guess();
+                // var curr = now + tz_s;
+                // console.log("TOTAL");
+                // console.log(curr);
+                // console.log("LAST MODIFIED");
+                // // console.log(featuresFiles["files"][i]);
+                // console.log(cachedFeatures[i]["last_modified"]);
+
+                // var actual_time_final = moment(cachedFeatures[i]["last_modified"]).tz(tz_s);
+
+                // var actual_time_format = actual_time_final.format('MMMM Do YYYY, h:mm:ss a z');
+                // featuresFiles["files"][i]["last_modified"] = cac;
+            //     console.log("ACTUAL TIME FINAL..");
+            // console.log(actual_time_format);
             }
 
             res.send(JSON.stringify(featuresFiles));
@@ -671,6 +686,19 @@ app.post("/projectsbyid", async function (req, res){
             // console.log("RESULT3 %j", result3);
             result2["files"][i]["thumbnailUrl"] = result3["thumbnailUrl"];
             result2["files"][i]["projectId"] = pid;
+             var moment = require('moment-timezone');
+            var tz_s = moment.tz.guess();
+            // var curr = now + tz_s;
+            // console.log("TOTAL");
+            // console.log(curr);
+
+
+            var actual_time_final = moment(result2["files"][i]["last_modified"]).tz(tz_s);
+
+            var actual_time_format = actual_time_final.format('MMMM Do YYYY, h:mm:ss a z');
+            result2["files"][i]["last_modified"] = actual_time_format;
+            console.log("ACTUAL TIME FINAL API..");
+            console.log(actual_time_format);
             postCacheFeatures(result2["files"][i]);
         }
 
@@ -871,6 +899,20 @@ app.post("/teamProjectsall", async function (req, res) {
              result3["name"] = result2["projects"][i]["name"];
              result3["thumbnailUrl"] = resultimagefinal["thumbnailUrl"];
              result3["teamid"] = teamID;
+
+             var moment = require('moment-timezone');
+            var tz_s = moment.tz.guess();
+            // var curr = now + tz_s;
+            // console.log("TOTAL");
+            // console.log(curr);
+
+
+            var actual_time_final = moment(result3["files"][0]["last_modified"]).tz(tz_s);
+
+            var actual_time_format = actual_time_final.format('MMMM Do YYYY, h:mm:ss a z');
+            result3["files"][0]["last_modified"] = actual_time_format;
+            console.log("ACTUAL TIME FINAL..");
+            console.log(actual_time_format);
 
              all_project_files.push(result3);
              postCacheProjects(result3);
