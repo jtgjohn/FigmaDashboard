@@ -105,7 +105,16 @@ export class DesignsComponent implements OnInit {
 
   onChange(versionId, val){
   	this.modifyStatus(versionId, val).subscribe((res:any) => {
-         // console.log(res);
+         console.log(res);
+         var id = -1;
+         for(var i = 0; i < this.designs.length; ++i){
+           if(this.designs[i].version_id === versionId){
+             this.designs[i].approver = res["lastChanger"];
+             this.designs[i].last_approved = res["lastChangetime"];
+           }
+         }
+
+
          // for (let key in res["images"]) {
    
          // 	var proj = {} as Design;
