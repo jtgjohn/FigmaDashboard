@@ -617,6 +617,7 @@ var counter = 0;
          	if("comments" in res[i]){
              console.log("HERE");
              for(var x = 0; x < res[i]["comments"].length; ++x){
+               console.log(res[i]["comments"]);
                if(typeof res[i]["comments"][x] !== 'string' && res[i]["comments"][x]["commentBody"]!=="" ){
                  console.log("HERE??..");
                  var handle = res[i]["comments"][x][0]["userHandle"];
@@ -624,6 +625,7 @@ var counter = 0;
                  var colon = " : ";
                  var commentbody = res[i]["comments"][x][0]["commentBody"];
                  var final = handle.concat(colon).concat(commentbody);
+                 console.log(handle);
              	   curr_comments.push(final);
                   this.comments[this.comments.length - 1].push(final);
                   console.log(curr_comments);
@@ -831,6 +833,12 @@ var counter = 0;
          proj.last_approved = "";
          proj.approver = "";
          proj.version_id = res["_id"];
+         if(this.filterbystatus == false){
+           this.allcolors.unshift("#F2C94C");
+           this.commentson.unshift(false);
+           this.comments.unshift([]);
+           this.designs.unshift(proj);
+         }
          if(this.statusfiltercolor === proj.status){
            for(var x = 0; x < this.designs.length; ++x){
              this.designs[x].id++;
