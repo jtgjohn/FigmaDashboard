@@ -23,7 +23,7 @@ export interface Design{
   last_approved: string,
   id: number
   status: string,
-  actual_approver: string,
+  // actual_approver: string,
   version_id: string
 };
 
@@ -129,7 +129,7 @@ export class DesignsComponent implements OnInit {
            proj.title = res[i]["whatisnewinfo"];
            proj.thumbnail_url = res[i]["imagePath"];
            proj.last_modified = res[i]["timestamp"];
-          proj.actual_approver = res[i]["reviewer"];
+          // proj.actual_approver = res[i]["reviewer"];
            this.commentson.push(false);
            this.latest_thumbnail_url = proj.thumbnail_url;
            proj.status = res[i]["status"];
@@ -227,7 +227,7 @@ export class DesignsComponent implements OnInit {
            proj.title = res[i]["whatisnewinfo"];
            proj.thumbnail_url = res[i]["imagePath"];
            proj.last_modified = res[i]["timestamp"];
-          proj.actual_approver = res[i]["reviewer"];
+          // proj.actual_approver = res[i]["reviewer"];
            this.commentson.push(false);
            this.latest_thumbnail_url = proj.thumbnail_url;
            proj.status = res[i]["status"];
@@ -328,7 +328,7 @@ export class DesignsComponent implements OnInit {
            proj.title = res[i]["whatisnewinfo"];
            proj.thumbnail_url = res[i]["imagePath"];
            proj.last_modified = res[i]["timestamp"];
-          proj.actual_approver = res[i]["reviewer"];
+          // proj.actual_approver = res[i]["reviewer"];
            this.commentson.push(false);
            this.latest_thumbnail_url = proj.thumbnail_url;
            proj.status = res[i]["status"];
@@ -580,7 +580,7 @@ var counter = 0;
          	proj.title = res[i]["whatisnewinfo"];
          	proj.thumbnail_url = res[i]["imagePath"];
          	proj.last_modified = res[i]["timestamp"];
-          proj.actual_approver = res[i]["reviewer"];
+          // proj.actual_approver = res[i]["reviewer"];
            this.commentson.push(false);
          	this.latest_thumbnail_url = proj.thumbnail_url;
          	proj.status = res[i]["status"];
@@ -831,7 +831,7 @@ var counter = 0;
          proj.last_modified = res["timestamp"];
          proj.id = 0;
          proj.status = res["status"];
-         proj.actual_approver = (<HTMLInputElement>document.getElementById("reviewer_d")).value;
+         // proj.actual_approver = (<HTMLInputElement>document.getElementById("reviewer_d")).value;
          proj.last_approved = "";
          proj.approver = "";
          proj.version_id = res["_id"];
