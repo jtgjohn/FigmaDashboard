@@ -831,14 +831,16 @@ var counter = 0;
          proj.last_approved = "";
          proj.approver = "";
          proj.version_id = res["_id"];
-         for(var x = 0; x < this.designs.length; ++x){
-           this.designs[x].id++;
+         if(this.statusfiltercolor === proj.status){
+           for(var x = 0; x < this.designs.length; ++x){
+             this.designs[x].id++;
 
+           }
+           this.allcolors.unshift("#F2C94C");
+           this.commentson.unshift(false);
+           this.comments.unshift([]);
+           this.designs.unshift(proj);
          }
-         this.allcolors.unshift("#F2C94C");
-         this.commentson.unshift(false);
-         this.comments.unshift([]);
-         this.designs.unshift(proj);
 
          // for (let key in res["images"]) {
    
