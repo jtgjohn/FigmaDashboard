@@ -757,7 +757,8 @@ var counter = 0;
         'Content-Type': 'application/json'
     });
 
-    var reviewer = (<HTMLInputElement>document.getElementById("reviewer_d")).value;
+    // var reviewer = (<HTMLInputElement>document.getElementById("reviewer_d")).value;
+    var reviewer = "";
     var whatisnew = (<HTMLInputElement>document.getElementById("wnew")).value;
 
 
@@ -830,10 +831,15 @@ var counter = 0;
          proj.last_modified = res["timestamp"];
          proj.id = 0;
          proj.status = res["status"];
+         proj.actual_approver = (<HTMLInputElement>document.getElementById("reviewer_d")).value;
          proj.last_approved = "";
          proj.approver = "";
          proj.version_id = res["_id"];
          if(this.filterbystatus == false){
+            for(var x = 0; x < this.designs.length; ++x){
+             this.designs[x].id++;
+
+           }
            this.allcolors.unshift("#F2C94C");
            this.commentson.unshift(false);
            this.comments.unshift([]);
