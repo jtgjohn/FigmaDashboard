@@ -107,8 +107,8 @@
 <div class =  "all_features_panel panel-group">
 
 	<div class = "add_version_panel" *ngIf = "panelvisible == true">
-		<label for = "featurelabel" class = "feature_label">
-			 02/15/2019 14:30
+		<label for = "featurelabel" class = "feature_label" id = "datecurrent">
+			 {{today_date}}
 		</label>
 	  <input class = "whatsnew"  id = "wnew" placeholder= "What's New?" >
 
@@ -166,8 +166,18 @@
 		</p>
 
 
+
+
+
 		<p class = "feature_paragraph" *ngIf = "pr.last_approved !== ''">
 			Status Last Changed By: {{pr.approver}} at: {{pr.last_approved}}
+
+
+		</p>
+
+
+		<p class = "feature_paragraph">
+			Original Approver: {{pr.actual_approver}}
 
 
 		</p>

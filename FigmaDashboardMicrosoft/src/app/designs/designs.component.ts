@@ -23,6 +23,7 @@ export interface Design{
   last_approved: string,
   id: number
   status: string,
+  actual_approver: string,
   version_id: string
 };
 
@@ -35,7 +36,7 @@ export interface Design{
 export class DesignsComponent implements OnInit {
 	color = "";	
 	color1 = "";
-
+  today_date = "";
   commentson = [];
 	// commentson:boolean = true;
 	colorversion = "";
@@ -250,6 +251,7 @@ var counter = 0;
          	proj.title = res[i]["whatisnewinfo"];
          	proj.thumbnail_url = res[i]["imagePath"];
          	proj.last_modified = res[i]["timestamp"];
+          proj.actual_approver = res[i]["reviewer"];
            this.commentson.push(false);
          	this.latest_thumbnail_url = proj.thumbnail_url;
          	proj.status = res[i]["status"];
@@ -454,7 +456,18 @@ var counter = 0;
   	this.panelvisible = !this.panelvisible;
   	 var status = "";
      if(this.panelvisible){
-       document.getElementById("top_button").innerHTML = "Add New Version(Collapse)";
+       var now = new Date();
+        var day = String(now.getDate()).padStart(2, '0');
+        var month = String(now.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var year = now.getFullYear();
+        var current_day = "";
+        current_day+= (month + "/" + day + "/" + year);
+        console.log(current_day);
+         this.today_date = current_day;
+       // document.getElementById("top_button").innerHTML = "Add New Version(Collapse)";
+       // document.getElementsByClassName("feature_label")[0].innerHTML = current_day;
+       // console.log(document.getElementsByClassName("feature_label")[0]);
+       // document.getElementById("datecurrent").innerHTML = current_day;
      }else{
        document.getElementById("top_button").innerHTML = "Add New Version";
      }
