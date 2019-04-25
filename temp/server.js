@@ -218,6 +218,8 @@ function getVersionsByStatus(featureId, fstatus, callback) {
     });
 }
 
+
+
 function getMostRecentVersionImage(featureId, callback) {
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
@@ -598,6 +600,22 @@ app.get("/user", async function (req, res) {
 
     res.send(ret);
 });
+
+
+app.get("/getVersionsbyStatus", function(req, res) {
+
+    // console.log("REQ");
+    // console.log(req.query.fid);
+    
+    getVersionsByStatus(req.query.fid, req.query.status, function(err, result) {
+        if (err) throw err;
+
+        else{
+        console.log(result); 
+            res.send(result);
+        }
+    });
+})
 
 
 app.post("/getUserTeams", async function (req, res) {
@@ -1003,7 +1021,7 @@ app.get("/getVersions", function(req, res) {
             res.send(result);
         }
     });
-})
+});
 
 
 function findID(mapItem, id) {

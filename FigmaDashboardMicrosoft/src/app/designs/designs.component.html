@@ -153,6 +153,26 @@
 <!-- 	<br/>
 	<br/> -->
 
+
+	<mat-checkbox class = "readyexports" [checked]= "filterbystatus" 
+	(change)="showOptionsexp($event.checked)" 
+>Filter by Status?</mat-checkbox>
+	  <select [compareWith]="compareFn" [ngStyle]="{'background-color': statusfiltercolor}"  [(ngModel)]="statusfiltercolor" *ngIf = "filterbystatus == true"
+			class = "approval_dropdown_version" (change)="onChangefilter($event.target.value)" >
+  			<option value="#F2C94C" class = "yellowoption" [selected] = "true"> Pending Approval</option>
+			  <option value="#6FCF97" class = "greenoption" >Approved</option>
+			  <option value="#EB5757" class = "redoption"> Changes Requested </option>
+	  </select>
+
+
+
+	
+
+	  <br/>
+	  <br/>
+	  <br/>
+	  <br/>
+
 	<ng-container *ngFor="let pr of designs" >
 	<div class = "feature_panel" >
 		<label for = "featurelabel" class = "feature_label">

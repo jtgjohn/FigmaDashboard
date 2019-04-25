@@ -45,6 +45,8 @@ export class DesignsComponent implements OnInit {
 	colorversionreview = "";
 	changeworthy:boolean = false;
 	panelvisible:boolean = false;
+  statusfiltercolor = "";
+  filterbystatus:boolean = false;
   public width: Number;
   public left: Number;
 	 id = "";
@@ -104,6 +106,312 @@ export class DesignsComponent implements OnInit {
     });
   }
 
+
+
+
+  showOptionsexp(checked){
+    console.log(checked);
+    this.filterbystatus = checked;
+    this.statusfiltercolor = "#F2C94C";
+    if(!checked){
+      this.comments.length = 0;
+      this.designs.length = 0;
+      this.commentson.length = 0;
+      this.allcolors.length = 0;
+      var counter = 0;
+       this.getVersions().subscribe((res:any) => {
+         console.log(res);
+
+         for(var i = 0; i < res.length; ++i){
+           this.comments.push([]);
+           var proj = {} as Design;
+
+           proj.title = res[i]["whatisnewinfo"];
+           proj.thumbnail_url = res[i]["imagePath"];
+           proj.last_modified = res[i]["timestamp"];
+          proj.actual_approver = res[i]["reviewer"];
+           this.commentson.push(false);
+           this.latest_thumbnail_url = proj.thumbnail_url;
+           proj.status = res[i]["status"];
+           if(proj.status === "Draft"||proj.status === "Request Approval"){
+             proj.status = "Pending Approval";
+           }
+
+           proj.id = counter;
+           if(proj.status === "Pending Approval"){
+             this.allcolors[proj.id] = "#F2C94C";
+           }
+           else if (proj.status === "#F2C94C"){
+             this.allcolors[proj.id] = "#F2C94C";
+           }
+           else if(proj.status === "#6FCF97"){
+             this.allcolors[proj.id] = "#6FCF97";
+           }else if(proj.status === "#EB5757"){
+             this.allcolors[proj.id] = "#EB5757";
+           }
+           console.log(proj.id);
+           proj.version_id = res[i]["_id"];
+           console.log(proj.version_id);
+      var curr_comments = [];
+          console.log(res[i]);
+ 
+          if("lastChanger" in res[i]){
+            proj.approver = res[i]["lastChanger"];
+            proj.last_approved = res[i]["lastChangetime"];
+
+          }else{
+            proj.approver = "";
+            proj.last_approved = "";
+          }
+           if("comments" in res[i]){
+             console.log("HERE");
+             for(var x = 0; x < res[i]["comments"].length; ++x){
+               if(typeof res[i]["comments"][x] !== 'string' && res[i]["comments"][x]["commentBody"]!=="" ){
+                 console.log("HERE??..");
+                 var handle = res[i]["comments"][x][0]["userHandle"];
+                 console.log(handle);
+                 var colon = " : ";
+                 var commentbody = res[i]["comments"][x][0]["commentBody"];
+                 var final = handle.concat(colon).concat(commentbody);
+                  curr_comments.push(final);
+                  this.comments[this.comments.length - 1].push(final);
+                  console.log(curr_comments);
+               }
+             }
+           }else{
+             curr_comments = [];
+           }
+
+
+       //     var all_comments = this.getcommentsall(proj.version_id).subscribe((res:any) => {
+       //         console.log(res);
+         //    }, (err) => {
+         //    console.log(err);
+         // });
+
+
+           
+
+           this.allcolors.push("#F2C94C");
+           this.designs.push(proj);
+           // this.comments[this.comments.length-1].push(curr_comments);
+           console.log(this.comments);
+
+           counter++;
+         }
+
+         console.log(this.comments);
+
+
+        
+         
+
+
+         // console.log(this.features);
+      }, (err) => {
+        console.log(err);
+      });
+    }else{
+      this.comments.length = 0;
+      this.designs.length = 0;
+      this.commentson.length = 0;
+      this.allcolors.length = 0;
+      var counter = 0;
+       this.getVersionsByStatus("#F2C94C").subscribe((res:any) => {
+         console.log(res);
+
+         for(var i = 0; i < res.length; ++i){
+           this.comments.push([]);
+           var proj = {} as Design;
+
+           proj.title = res[i]["whatisnewinfo"];
+           proj.thumbnail_url = res[i]["imagePath"];
+           proj.last_modified = res[i]["timestamp"];
+          proj.actual_approver = res[i]["reviewer"];
+           this.commentson.push(false);
+           this.latest_thumbnail_url = proj.thumbnail_url;
+           proj.status = res[i]["status"];
+           if(proj.status === "Draft"||proj.status === "Request Approval"){
+             proj.status = "Pending Approval";
+           }
+
+           proj.id = counter;
+           if(proj.status === "Pending Approval"){
+             this.allcolors[proj.id] = "#F2C94C";
+           }
+           else if (proj.status === "#F2C94C"){
+             this.allcolors[proj.id] = "#F2C94C";
+           }
+           else if(proj.status === "#6FCF97"){
+             this.allcolors[proj.id] = "#6FCF97";
+           }else if(proj.status === "#EB5757"){
+             this.allcolors[proj.id] = "#EB5757";
+           }
+           console.log(proj.id);
+           proj.version_id = res[i]["_id"];
+           console.log(proj.version_id);
+      var curr_comments = [];
+          console.log(res[i]);
+ 
+          if("lastChanger" in res[i]){
+            proj.approver = res[i]["lastChanger"];
+            proj.last_approved = res[i]["lastChangetime"];
+
+          }else{
+            proj.approver = "";
+            proj.last_approved = "";
+          }
+           if("comments" in res[i]){
+             console.log("HERE");
+             for(var x = 0; x < res[i]["comments"].length; ++x){
+               if(typeof res[i]["comments"][x] !== 'string' && res[i]["comments"][x]["commentBody"]!=="" ){
+                 console.log("HERE??..");
+                 var handle = res[i]["comments"][x][0]["userHandle"];
+                 console.log(handle);
+                 var colon = " : ";
+                 var commentbody = res[i]["comments"][x][0]["commentBody"];
+                 var final = handle.concat(colon).concat(commentbody);
+                  curr_comments.push(final);
+                  this.comments[this.comments.length - 1].push(final);
+                  console.log(curr_comments);
+               }
+             }
+           }else{
+             curr_comments = [];
+           }
+
+
+       //     var all_comments = this.getcommentsall(proj.version_id).subscribe((res:any) => {
+       //         console.log(res);
+         //    }, (err) => {
+         //    console.log(err);
+         // });
+
+
+           
+
+           this.allcolors.push("#F2C94C");
+           this.designs.push(proj);
+           // this.comments[this.comments.length-1].push(curr_comments);
+           console.log(this.comments);
+
+           counter++;
+         }
+
+         console.log(this.comments);
+
+
+        
+         
+
+
+         // console.log(this.features);
+      }, (err) => {
+        console.log(err);
+      });
+    }
+  }
+
+  onChangefilter(val){
+    this.comments.length = 0;
+      this.designs.length = 0;
+      this.commentson.length = 0;
+      this.allcolors.length = 0;
+      var counter = 0;
+       this.getVersionsByStatus(val).subscribe((res:any) => {
+         console.log(res);
+
+         for(var i = 0; i < res.length; ++i){
+           this.comments.push([]);
+           var proj = {} as Design;
+
+           proj.title = res[i]["whatisnewinfo"];
+           proj.thumbnail_url = res[i]["imagePath"];
+           proj.last_modified = res[i]["timestamp"];
+          proj.actual_approver = res[i]["reviewer"];
+           this.commentson.push(false);
+           this.latest_thumbnail_url = proj.thumbnail_url;
+           proj.status = res[i]["status"];
+           if(proj.status === "Draft"||proj.status === "Request Approval"){
+             proj.status = "Pending Approval";
+           }
+
+           proj.id = counter;
+           if(proj.status === "Pending Approval"){
+             this.allcolors[proj.id] = "#F2C94C";
+           }
+           else if (proj.status === "#F2C94C"){
+             this.allcolors[proj.id] = "#F2C94C";
+           }
+           else if(proj.status === "#6FCF97"){
+             this.allcolors[proj.id] = "#6FCF97";
+           }else if(proj.status === "#EB5757"){
+             this.allcolors[proj.id] = "#EB5757";
+           }
+           console.log(proj.id);
+           proj.version_id = res[i]["_id"];
+           console.log(proj.version_id);
+      var curr_comments = [];
+          console.log(res[i]);
+ 
+          if("lastChanger" in res[i]){
+            proj.approver = res[i]["lastChanger"];
+            proj.last_approved = res[i]["lastChangetime"];
+
+          }else{
+            proj.approver = "";
+            proj.last_approved = "";
+          }
+           if("comments" in res[i]){
+             console.log("HERE");
+             for(var x = 0; x < res[i]["comments"].length; ++x){
+               if(typeof res[i]["comments"][x] !== 'string' && res[i]["comments"][x]["commentBody"]!=="" ){
+                 console.log("HERE??..");
+                 var handle = res[i]["comments"][x][0]["userHandle"];
+                 console.log(handle);
+                 var colon = " : ";
+                 var commentbody = res[i]["comments"][x][0]["commentBody"];
+                 var final = handle.concat(colon).concat(commentbody);
+                  curr_comments.push(final);
+                  this.comments[this.comments.length - 1].push(final);
+                  console.log(curr_comments);
+               }
+             }
+           }else{
+             curr_comments = [];
+           }
+
+
+       //     var all_comments = this.getcommentsall(proj.version_id).subscribe((res:any) => {
+       //         console.log(res);
+         //    }, (err) => {
+         //    console.log(err);
+         // });
+
+
+           
+
+           this.allcolors.push("#F2C94C");
+           this.designs.push(proj);
+           // this.comments[this.comments.length-1].push(curr_comments);
+           console.log(this.comments);
+
+           counter++;
+         }
+
+         console.log(this.comments);
+
+
+        
+         
+
+
+         // console.log(this.features);
+      }, (err) => {
+        console.log(err);
+      });
+  }
+
   onChange(versionId, val){
   	this.modifyStatus(versionId, val).subscribe((res:any) => {
          console.log(res);
@@ -140,6 +448,27 @@ export class DesignsComponent implements OnInit {
     }else{
        document.getElementById(total_view).innerHTML = "View Comments";
     }
+  }
+
+
+  getVersionsByStatus(status){
+     var datax; 
+    const headers = new HttpHeaders({
+       
+        'Content-Type': 'application/json'
+    });
+
+    var url = "http://127.0.0.1:8080/getVersionsbyStatus";
+    
+
+    
+
+    // console.log("DATA: " + data);
+    // console.log("HEADERS: " + headers);
+    //make a cross origin POST request for user timeline info.
+    return this.http.get(url, {
+      params: {'status': status, 'fid': this.id}
+    });
   }
   getVersions(){
   	 var datax; 
@@ -446,7 +775,7 @@ var counter = 0;
     // console.log("DATA: " + data);
     // console.log("HEADERS: " + headers);
     //make a cross origin POST request for user timeline info.
-    return this.http.post('http://127.0.0.1:8080/addversion', JSON.stringify({"reviewer": reviewer,"status": status, 
+    return this.http.post('http://127.0.0.1:8080/addversion', JSON.stringify({"reviewer": reviewer,"status": "#F2C94C", 
     	"fid": this.id,
     	"imagePath": this.latest_thumbnail_url, "whatisnew": whatisnew, "readytoexport": this.readytoexport}), {
       headers: headers
