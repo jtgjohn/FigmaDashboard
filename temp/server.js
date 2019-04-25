@@ -204,6 +204,20 @@ function getVersions(featureId, callback) {
     });
 }
 
+function getVersionsByStatus(featureId, fstatus, callback) {
+    mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("figmaDB");
+
+        dbo.collection("versions").find({fid: featureId, status: fstatus}).sort({actual_time_obj: -1}).toArray(function(err, result) {
+            console.log(result);
+            if (err) callback(err, null);
+            else callback(null, result);
+            db.close();
+        });
+    });
+}
+
 function getMostRecentVersionImage(featureId, callback) {
     mongo.connect(mongo_url, {useNewUrlParser: true}, function(err, db) {
         if (err) throw err;
