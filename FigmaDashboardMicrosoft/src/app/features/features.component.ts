@@ -41,8 +41,6 @@ export class FeaturesComponent implements OnInit {
         'Content-Type': 'application/json'
     });
 
-    // console.log("DATA: " + data);
-    // console.log("HEADERS: " + headers);
     //make a cross origin POST request for user timeline info.
     return this.http.post('http://127.0.0.1:8080/projectsbyid', JSON.stringify({"code": code, "id": this.id}), {
       headers: headers
@@ -51,8 +49,6 @@ export class FeaturesComponent implements OnInit {
   ngOnInit() {
 
 
-  	  // let id = this.route.snapshot.paramMap.get('id');
-  	  // console.log(id);
   	 this.activatedRoute.params.subscribe(params => {
       console.log(params) //log the entire params object
       console.log(params['project_id']) //log the value of id
@@ -68,7 +64,7 @@ export class FeaturesComponent implements OnInit {
      document.getElementById("projecttitle").innerHTML = this.project_name;
 
   	 this.getFiles(this.code).subscribe((res:any) => {
-         console.log(res);
+
          for(var i = 0; i < res["files"].length; ++i){
          	var proj = {} as Feature;
          	proj.title = res["files"][i]["name"];
@@ -100,8 +96,5 @@ queryParams: this.queryParams, queryParamsHandling: "merge" });
       this.router.navigate(['/home'],     {   relativeTo: this.activatedRoute,
 queryParams: this.queryParams, queryParamsHandling: "merge" });
   }
-
-
-   
 
 }

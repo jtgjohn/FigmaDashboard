@@ -31,15 +31,11 @@ export class HomeComponent implements OnInit {
   view_id_view(teamid: string){
     console.log(teamid);
 		var datax;
-		// var teamid = (<HTMLInputElement>document.getElementById("teamident")).value;
 	 const headers = new HttpHeaders({
 
 			 'Content-Type': 'application/json'
 	 });
 
-	 // console.log("DATA: " + data);
-	 // console.log("HEADERS: " + headers);
-	 //make a cross origin POST request for user timeline info.
 	 return this.http.post('http://127.0.0.1:8080/teamProjectsall', JSON.stringify({"code": this.code, "teamid": teamid}), {
 		 headers: headers
 	 });
@@ -55,9 +51,6 @@ export class HomeComponent implements OnInit {
        'Content-Type': 'application/json'
    });
 
-   // console.log("DATA: " + data);
-   // console.log("HEADERS: " + headers);
-   //make a cross origin POST request for user timeline info.
    return this.http.post('http://127.0.0.1:8080/postTeam', JSON.stringify({"team": team}), {
      headers: headers
    });
@@ -74,14 +67,7 @@ export class HomeComponent implements OnInit {
 
       .subscribe((res:any) => {
          console.log(res);
-         // for(var i = 0; i < res.length; ++i){
-         //   var proj = {} as Project;
-         //   proj.title = res[i]["name"];
-         //   proj.thumbnail_url = res[i]["thumbnailUrl"];
-         //   proj.last_modified = res[i]["files"][0]["last_modified"];
-         //   proj.id = res[i]["id"];
-         //   this.projects.push(proj);
-         // }
+
 
       }, (err) => {
         console.log(err);
@@ -97,9 +83,6 @@ export class HomeComponent implements OnInit {
        'Content-Type': 'application/json'
    });
 
-   // console.log("DATA: " + data);
-   // console.log("HEADERS: " + headers);
-   //make a cross origin POST request for user timeline info.
    return this.http.post('http://127.0.0.1:8080/removeTeam', JSON.stringify({"team": team}), {
      headers: headers
    });
@@ -121,21 +104,12 @@ export class HomeComponent implements OnInit {
          this.status_values.splice(index, 1);
 
          
-         // console.log("STATUS VAL: ");
-         // console.log(this.status_values);
      this.remove_team_sub(old_team_val)
 
       .subscribe((res:any) => {
          console.log(res);
 
-         // for(var i = 0; i < res.length; ++i){
-         //   var proj = {} as Project;
-         //   proj.title = res[i]["name"];
-         //   proj.thumbnail_url = res[i]["thumbnailUrl"];
-         //   proj.last_modified = res[i]["files"][0]["last_modified"];
-         //   proj.id = res[i]["id"];
-         //   this.projects.push(proj);
-         // }
+
 
       }, (err) => {
         console.log(err);
@@ -162,11 +136,11 @@ export class HomeComponent implements OnInit {
 
   public onChangeTeam(event): void {  // event will give you full breif of action
     const newVal = event.target.value;
-    console.log(newVal);
+
      this.view_id_view(newVal)
 
       .subscribe((res:any) => {
-         console.log(res);
+
          this.projects.length = 0;
          for(var i = 0; i < res.length; ++i){
            var proj = {} as Project;
@@ -180,7 +154,6 @@ export class HomeComponent implements OnInit {
       }, (err) => {
         console.log(err);
       });
-    // console.log(newVal);
   }
 
   getProjects(code: string){
@@ -191,9 +164,6 @@ export class HomeComponent implements OnInit {
         'Content-Type': 'application/json'
     });
 
-    // console.log("DATA: " + data);
-    // console.log("HEADERS: " + headers);
-    //make a cross origin POST request for user timeline info.
     return this.http.post('http://127.0.0.1:8080/teamProjectsall', JSON.stringify({"code": code}), {
       headers: headers
     });
@@ -207,28 +177,20 @@ export class HomeComponent implements OnInit {
         'Content-Type': 'application/json'
     });
 
-    // console.log("DATA: " + data);
-    // console.log("HEADERS: " + headers);
-    //make a cross origin POST request for user timeline info.
-
     return this.http.post('http://127.0.0.1:8080/getUserTeams', JSON.stringify({"code": code}), {
       headers: headers
     });
 
-    // return this.http.get('http://127.0.0.1:8080/getUserTeams',  {
-    //   headers: headers
-    // });
   }
   ngOnInit() {
   	this.code = "";
   	this.activatedRoute.queryParams.subscribe(params => {
-        console.log(params);
+
         this.code = params["code"];
         this.state = params["state"];
         this.loadTeams(this.code)
 
         .subscribe((res:any) => {
-          console.log(res);
           for(var i = 0; i < res["teamIDs"].length; ++i){
             this.status_values.push(res["teamIDs"][i]);
           }
@@ -236,26 +198,6 @@ export class HomeComponent implements OnInit {
           console.log(err);
         });
     });
-
-    
-
-    // this.getProjects(this.code)
-
-    //   .subscribe((res:any) => {
-    //      console.log(res);
-    //      for(var i = 0; i < res.length; ++i){
-    //      	var proj = {} as Project;
-    //      	proj.title = res[i]["name"];
-    //      	proj.thumbnail_url = res[i]["thumbnailUrl"];
-    //      	proj.last_modified = res[i]["files"][0]["last_modified"];
-    //      	proj.id = res[i]["id"];
-    //      	this.projects.push(proj);
-    //      }
-
-    //   }, (err) => {
-    //     console.log(err);
-    //   });
-
 
 
   }
@@ -267,7 +209,5 @@ export class HomeComponent implements OnInit {
 queryParams: this.queryParams, queryParamsHandling: "merge" });
 
   }
-
-
 
 }

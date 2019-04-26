@@ -4,8 +4,7 @@
 
 <div class="navbar">
 <label for="uname" class = "navbarheading"><b>Home</b></label>
-<!-- <input  class = "auth_field" placeholder="Enter TeamID" id= "teamident" name="teamid" type = "text" /> -->
-<!-- <input class = "auth_field_one" type="submit" value="Submit" (click)="view_id_view_head(teamid)"> -->
+
 	<div class = "icon">
 
 		<svg width="48" height="39" viewBox="0 0 48 39" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -29,8 +28,6 @@
 			   <option *ngFor="let status_item of status_values">
 			    {{status_item}}
 			    </option>
-			  <!-- <option value="#F2C94C" class = "yellowoption" > Request Approval </option>
-			  <option value="#BDBDBD" class = "grayoption"> Draft </option> -->
 	  </select>
 <input  class = "auth_field_add" placeholder="TeamID" id= "add_team_input" name="teamid" type = "text" />
 <select class = "teamname" id = "remove_team_input"  >
@@ -40,8 +37,6 @@
 			   <option *ngFor="let status_item of status_values">
 			    {{status_item}}
 			    </option>
-			  <!-- <option value="#F2C94C" class = "yellowoption" > Request Approval </option>
-			  <option value="#BDBDBD" class = "grayoption"> Draft </option> -->
 	  </select>
 <br/>
 <button class = "auth_field_button_add" (click) = "add_team()"> Add Team </button>
@@ -84,53 +79,5 @@
 	<br/>
 	<br/>
 	</ng-container>
-	<!-- <div class = "feature_panel" >
-		<label for = "featurelabel" class = "feature_label">
-			 Edge
-		</label>
-
-		<p class = "feature_paragraph">
-			Microsoft Edge is the default web browser on Windows 10, Windows 10 Mobile, and XBox One consoles, replacing Internet Explorer 11 and Internet Explorer Mobile. Mircrosoft initially announced that Edge would support the legacy Trident (MSHTML) layout engine for backwards compatibility.
-
-
-		</p>
-
-
-		<div class = "project_image">
-			<img src = "https://c.s-microsoft.com/en-us/CMSImages/Edge_1920_panel9_MultiFeature_Books.jpg?version=ef796936-6e37-bbc9-db0c-7071c1094d01"/>
-
-		</div>
-
-
-		<button class = "feature_button"> View Features </button>
-
-
-
-
-
-	</div> -->
-
-	<!-- <br/>
-	<br/>
-	<br/>
-	<br/> -->
-	<!-- <div class = "feature_panel">
-
-		<label for = "featurelabel" class = "feature_label">
-			 Sharepoint
-		</label>
-		<p class = "feature_paragraph">
-		  SharePoint is a web-based collaborative platform that integrates with Microsoft Office. Launched in 2001, SharePoint is primarily sold as a document management and storage system, but the product is highly configurable and usage varies substantially among organizations.
-
-		</p>
-
-
-		<div class = "project_image">
-			<img src = "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE27pOJ?ver=96bb&q=90&m=2&h=768&w=1024&b=%23FFFFFFFF&aim=true"/>
-
-		</div>
-
-			<button class = "feature_button"> View Features </button>
-	</div> -->
-
+	
 </div>
