@@ -1,3 +1,4 @@
 server/node_modules/
 FigmaDashBoardMicrosoft/node_modules/
 server/.env
+temp/

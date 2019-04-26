@@ -35,6 +35,7 @@ export interface Design{
 export class DesignsComponent implements OnInit {
 	color = "";	
 	color1 = "";
+  project_id = "";
   today_date = "";
   commentson = [];
 	colorversion = "";
@@ -73,6 +74,18 @@ export class DesignsComponent implements OnInit {
   	private activatedRoute: ActivatedRoute, private http: HttpClient,
       private router: Router, private _location: Location) { }
 
+   getFiles(code: string){
+     var datax;
+    const headers = new HttpHeaders({
+       
+        'Content-Type': 'application/json'
+    });
+
+    //make a cross origin POST request for user timeline info.
+    return this.http.post('http://127.0.0.1:8080/projectsbyid', JSON.stringify({"code": code, "id": this.project_id}), {
+      headers: headers
+    });
+  }
    getFileImages(){
      var datax;
     const headers = new HttpHeaders({
@@ -118,7 +131,7 @@ export class DesignsComponent implements OnInit {
            var proj = {} as Design;
 
            proj.title = res[i]["whatisnewinfo"];
-           proj.thumbnail_url = res[i]["imagePath"];
+           proj.thumbnail_url = this.latest_thumbnail_url;
            proj.last_modified = res[i]["timestamp"];
            this.commentson.push(false);
            this.latest_thumbnail_url = proj.thumbnail_url;
@@ -193,7 +206,7 @@ export class DesignsComponent implements OnInit {
            var proj = {} as Design;
 
            proj.title = res[i]["whatisnewinfo"];
-           proj.thumbnail_url = res[i]["imagePath"];
+           proj.thumbnail_url = this.latest_thumbnail_url;
            proj.last_modified = res[i]["timestamp"];
            this.commentson.push(false);
            this.latest_thumbnail_url = proj.thumbnail_url;
@@ -267,7 +280,7 @@ export class DesignsComponent implements OnInit {
            var proj = {} as Design;
 
            proj.title = res[i]["whatisnewinfo"];
-           proj.thumbnail_url = res[i]["imagePath"];
+           proj.thumbnail_url = this.latest_thumbnail_url;
            proj.last_modified = res[i]["timestamp"];
            this.commentson.push(false);
            this.latest_thumbnail_url = proj.thumbnail_url;
@@ -401,10 +414,12 @@ export class DesignsComponent implements OnInit {
       console.log(params) //log the entire params object
       console.log(params['feature_id']) //log the value of id
       this.id = params['feature_id'];
+
     });
   	 this.activatedRoute.queryParams.subscribe(params => {
         console.log(params);
         this.code = params["code"];
+         this.project_id = params['project_id'];
         this.project_name = params["project_name"];
         this.feature_name = params["feature_name"];
           	document.getElementById("featuretitle").innerHTML = this.feature_name;
@@ -428,7 +443,7 @@ var counter = 0;
          console.log(res);
          
          for (let key in res["images"]) {
-   
+          
          	this.latest_thumbnail_url = res["images"][key];
 
          }
@@ -437,76 +452,98 @@ var counter = 0;
       });
 
 
-     console.log(this.comments);
-  	 this.getVersions().subscribe((res:any) => {
-         console.log(res);
+     this.getFiles(this.code).subscribe((res:any) => {
+         console.log(res);  
 
-         for(var i = 0; i < res.length; ++i){
-           this.comments.push([]);
-         	var proj = {} as Design;
+         console.log(this.id);
 
-         	proj.title = res[i]["whatisnewinfo"];
-         	proj.thumbnail_url = res[i]["imagePath"];
-         	proj.last_modified = res[i]["timestamp"];
-           this.commentson.push(false);
-         	this.latest_thumbnail_url = proj.thumbnail_url;
-         	proj.status = res[i]["status"];
-         	if(proj.status === "Draft"||proj.status === "Request Approval"){
-         		proj.status = "Pending Approval";
-         	}
-
-         	proj.id = counter;
-         	if(proj.status === "Pending Approval"){
-         		this.allcolors[proj.id] = "#F2C94C";
-         	}
-         	else if (proj.status === "#F2C94C"){
-         		this.allcolors[proj.id] = "#F2C94C";
-         	}
-         	else if(proj.status === "#6FCF97"){
-         		this.allcolors[proj.id] = "#6FCF97";
-         	}else if(proj.status === "#EB5757"){
-         		this.allcolors[proj.id] = "#EB5757";
-         	}
-         	proj.version_id = res[i]["_id"];
-			    var curr_comments = [];
- 
-          if("lastChanger" in res[i]){
-            proj.approver = res[i]["lastChanger"];
-            proj.last_approved = res[i]["lastChangetime"];
-
-          }else{
-            proj.approver = "";
-            proj.last_approved = "";
-          }
-         	if("comments" in res[i]){
-             for(var x = 0; x < res[i]["comments"].length; ++x){
-               if(typeof res[i]["comments"][x] !== 'string' && res[i]["comments"][x]["commentBody"]!=="" ){
-
-                 var handle = res[i]["comments"][x][0]["userHandle"];
-
-                 var colon = " : ";
-                 var commentbody = res[i]["comments"][x][0]["commentBody"];
-                 var final = handle.concat(colon).concat(commentbody);
-
-             	   curr_comments.push(final);
-                  this.comments[this.comments.length - 1].push(final);
-
-               }
-             }
-         	}else{
-         		curr_comments = [];
-         	}
-
-
-         	this.allcolors.push("#F2C94C");
-         	this.designs.push(proj);
-
-         	counter++;
+         
+          for(var i = 0; i < res["files"].length; ++i){
+           if(this.id === res["files"][i]["key"]){
+             this.latest_thumbnail_url = res["files"][i]["thumbnailUrl"];
+           }
          }
 
+
+               this.getVersions().subscribe((res:any) => {
+               console.log(res);
+
+               for(var i = 0; i < res.length; ++i){
+                 this.comments.push([]);
+                 var proj = {} as Design;
+
+                 proj.title = res[i]["whatisnewinfo"];
+                 proj.thumbnail_url = this.latest_thumbnail_url;
+                 proj.last_modified = res[i]["timestamp"];
+                 this.commentson.push(false);
+                 // this.latest_thumbnail_url = proj.thumbnail_url;
+                 proj.status = res[i]["status"];
+                 if(proj.status === "Draft"||proj.status === "Request Approval"){
+                   proj.status = "Pending Approval";
+                 }
+
+                 proj.id = counter;
+                 if(proj.status === "Pending Approval"){
+                   this.allcolors[proj.id] = "#F2C94C";
+                 }
+                 else if (proj.status === "#F2C94C"){
+                   this.allcolors[proj.id] = "#F2C94C";
+                 }
+                 else if(proj.status === "#6FCF97"){
+                   this.allcolors[proj.id] = "#6FCF97";
+                 }else if(proj.status === "#EB5757"){
+                   this.allcolors[proj.id] = "#EB5757";
+                 }
+                 proj.version_id = res[i]["_id"];
+                var curr_comments = [];
+       
+                if("lastChanger" in res[i]){
+                  proj.approver = res[i]["lastChanger"];
+                  proj.last_approved = res[i]["lastChangetime"];
+
+                }else{
+                  proj.approver = "";
+                  proj.last_approved = "";
+                }
+                 if("comments" in res[i]){
+                   for(var x = 0; x < res[i]["comments"].length; ++x){
+                     if(typeof res[i]["comments"][x] !== 'string' && res[i]["comments"][x]["commentBody"]!=="" ){
+
+                       var handle = res[i]["comments"][x][0]["userHandle"];
+
+                       var colon = " : ";
+                       var commentbody = res[i]["comments"][x][0]["commentBody"];
+                       var final = handle.concat(colon).concat(commentbody);
+
+                        curr_comments.push(final);
+                        this.comments[this.comments.length - 1].push(final);
+
+                     }
+                   }
+                 }else{
+                   curr_comments = [];
+                 }
+
+
+                 this.allcolors.push("#F2C94C");
+                 this.designs.push(proj);
+
+                 counter++;
+               }
+
+            }, (err) => {
+              console.log(err);
+            });
+         
       }, (err) => {
         console.log(err);
       });
+
+     console.log(this.latest_thumbnail_url);
+
+
+     console.log(this.comments);
+  	 
 
   }
 

@@ -84,7 +84,7 @@ export class FeaturesComponent implements OnInit {
 
 
   view_features(id, name){
-     this.queryParams = {code: this.code, state: this.state, feature_name: name};
+     this.queryParams = {code: this.code, state: this.state, feature_name: name, project_id: this.id};
       this.router.navigate(['/designs', id],     {   relativeTo: this.activatedRoute,
 queryParams: this.queryParams, queryParamsHandling: "merge" });
 
